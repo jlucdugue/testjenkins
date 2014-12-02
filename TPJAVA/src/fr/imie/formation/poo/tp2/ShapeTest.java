@@ -3,7 +3,7 @@
  */
 package fr.imie.formation.poo.tp2;
 
-import java.awt.image.RescaleOp;
+import javax.management.RuntimeErrorException;
 
 /**
  * @author imie
@@ -15,18 +15,38 @@ public class ShapeTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Rectangle rectangle = new Rectangle(10,20);
-		System.out.format("aire du rectangle :%f\n",rectangle.area());
-		printPerimeterOf(rectangle);
-		Circle circle = new Circle(10);
-		System.out.format("aire du cercle :%f\n",circle.area());
-		printPerimeterOf(circle);
-		Carre carre = new Carre(20);
-		printPerimeterOf(carre);
+
+		Rectangle rectangle = null;
+		Triangle triangle = null;
+		try {
+			rectangle = new Rectangle(10, 20);
+			printInformationOf(rectangle);
+			Circle circle = new Circle(10);
+			printInformationOf(circle);
+			Carre carre = new Carre(20);
+			printInformationOf(carre);
+			triangle = new Triangle(10, 15, 30);
+			printInformationOf(triangle);
+			RegularPolygon regularPolygon = new RegularPolygon(100, 1);
+			printInformationOf(regularPolygon);
+		} catch (IMIEException e) {
+			System.out.println(e.getMessage());
+		} catch (IllegalArgumentException e) {
+			 //System.out.println("exception d'initialisation des Shapes");
+			 throw new RuntimeException("exception technique  : le developpeur doit les croissants",e);
+
+		}
 	}
-	
-	public static void printPerimeterOf(Shape shape){
-		System.out.format("aire de %s :%f\n",shape.getClass().getSimpleName(), shape.perimeter());
+
+	public static void printInformationOf(Shape shape) throws IMIEException {
+		try {
+			System.out.format("perimetre de %s :%f\n", shape.getClass()
+					.getSimpleName(), shape.perimeter());
+			System.out.format("aire de %s :%f\n", shape.getClass()
+					.getSimpleName(), shape.area());
+		} catch (NullPointerException e) {
+			throw new IMIEException("impossible d'afficher un objet vide", e);
+		}
 	}
 
 }
