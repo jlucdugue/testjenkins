@@ -3,6 +3,9 @@
  */
 package fr.imie.tpjdbc.presentation;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -39,6 +42,7 @@ public class Presentation implements IPresentation {
 		// TP1
 		Boolean endAppli = false;
 		List<PersonneDTO> personneDTOs = null;
+		
 		while (!endAppli) {
 
 			
@@ -82,9 +86,23 @@ public class Presentation implements IPresentation {
 						selectedPersonne.getDateNaiss(), selectedPersonne.getTel());
 			case 3:
 				
-				//au boulot
+				PersonneDTO personneDTO =  new PersonneDTO();
+				System.out.print("nom :  ");
+				String nom = scanner.nextLine();
+				personneDTO.setNom(nom);
+				System.out.print("prenom :  ");
+				String prenom = scanner.nextLine();
+				personneDTO.setPrenom(prenom);
+				System.out.print("tel :  ");
+				String tel = scanner.nextLine();
+				personneDTO.setTel(tel);
+				System.out.print("date de naissance :  ");
+				Date date = inputDate();
+				personneDTO.setDateNaiss(date);
+				personneDTO=personneDAO.insert(personneDTO);
+				System.out.format("nouvel id inséré : %s\n",personneDTO.getId());
 			default:
-				break;
+	
 			}
 			
 			
@@ -108,6 +126,22 @@ public class Presentation implements IPresentation {
 				input = Integer.valueOf(rawInput);
 				goodInput = true;
 			} catch (NumberFormatException e) {
+				System.out.println("mauvais format");
+			}
+		}
+		return input;
+	}
+	
+	private Date inputDate() {
+		SimpleDateFormat simpleDateFormat= new SimpleDateFormat("dd/MM/yyyy");
+		Boolean goodInput=false;		
+		Date input=null;
+		while (!goodInput) {
+			try {
+				String rawInput = scanner.nextLine();
+				input = simpleDateFormat.parse(rawInput);
+				goodInput = true;
+			} catch (ParseException e) {
 				System.out.println("mauvais format");
 			}
 		}

@@ -4,6 +4,7 @@
 package fr.imie.tpjdbc.DAO;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -93,6 +94,60 @@ public class PersonneDAO implements IPersonneDAO {
 			preparedStatement = connection
 					.prepareStatement("select nom, prenom, id, datenaiss,tel from personne where id=?");
 			preparedStatement.setInt(1, dto.getId());
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				retour = new PersonneDTO();
+				retour.setId(resultSet.getInt("id"));
+				retour.setNom(resultSet.getString("nom"));
+				retour.setPrenom(resultSet.getString("prenom"));
+				retour.setDateNaiss(resultSet.getDate("datenaiss"));
+				retour.setTel(resultSet.getString("tel"));
+			}
+
+			
+
+		} catch (SQLException e) {
+			throw new RuntimeException("erreure applicative", e);
+		} finally {
+			try {
+				if (resultSet != null && !resultSet.isClosed()) {
+					resultSet.close();
+				}
+				if (preparedStatement != null && !preparedStatement.isClosed()) {
+					preparedStatement.close();
+				}
+				if (connection != null && !connection.isClosed()) {
+					connection.close();
+				}
+
+			} catch (SQLException e) {
+				throw new RuntimeException("erreure applicative", e);
+			}
+		}
+
+		return retour;
+	}
+
+	@Override
+	public PersonneDTO insert(PersonneDTO dto) {
+		Connection connection=null;
+		PreparedStatement preparedStatement=null;
+		ResultSet resultSet=null;
+		PersonneDTO retour=null;
+		try {
+
+			connection = DriverManager.getConnection(
+					"jdbc:postgresql://localhost:5432/imie", "postgres",
+					"postgres");
+
+			preparedStatement = connection
+					.prepareStatement("insert into personne(nom, prenom, datenaiss,tel) values(?,?,?,?) returning nom, prenom, datenaiss,tel,id");
+			preparedStatement.setString(1, dto.getNom());
+			preparedStatement.setString(2, dto.getPrenom());
+			Date dateNaiss = new Date(dto.getDateNaiss().getTime());
+			preparedStatement.setDate(3, dateNaiss);
+			preparedStatement.setString(4, dto.getTel());
+			
 			resultSet = preparedStatement.executeQuery();
 			if (resultSet.next()) {
 				retour = new PersonneDTO();
