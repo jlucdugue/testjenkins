@@ -84,6 +84,7 @@ public class Presentation implements IPresentation {
 						"nom : %s \nprenom :  %s\ndateNaiss : %s\ntel %s\n\n",
 						selectedPersonne.getNom(), selectedPersonne.getPrenom(),
 						selectedPersonne.getDateNaiss(), selectedPersonne.getTel());
+				break;
 			case 3:
 				
 				PersonneDTO personneDTO =  new PersonneDTO();
@@ -101,6 +102,7 @@ public class Presentation implements IPresentation {
 				personneDTO.setDateNaiss(date);
 				personneDTO=personneDAO.insert(personneDTO);
 				System.out.format("nouvel id inséré : %s\n",personneDTO.getId());
+				break;
 			default:
 	
 			}
