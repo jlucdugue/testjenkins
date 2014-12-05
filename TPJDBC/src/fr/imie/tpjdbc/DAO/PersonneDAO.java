@@ -98,6 +98,10 @@ public class PersonneDAO implements IPersonneDAO {
 			if (resultSet.next()) {
 				retour = buildDTO(resultSet);
 			}
+			
+			
+
+			
 
 		} catch (SQLException e) {
 			throw new RuntimeException("erreure applicative", e);
@@ -129,7 +133,7 @@ public class PersonneDAO implements IPersonneDAO {
 		retour.setPrenom(resultSet.getString("prenom"));
 		retour.setDateNaiss(resultSet.getDate("datenaiss"));
 		retour.setTel(resultSet.getString("tel"));
-
+	
 		IPromotionDAO promotionDAO = new PromotionDAO();
 		PromotionDTO linkedPromotion = new PromotionDTO();
 		linkedPromotion.setId(resultSet.getInt("promotion_id"));
@@ -165,6 +169,8 @@ public class PersonneDAO implements IPersonneDAO {
 				retour = buildDTO(resultSet);
 			}
 
+			
+
 		} catch (SQLException e) {
 			throw new RuntimeException("erreure applicative", e);
 		} finally {
@@ -186,7 +192,7 @@ public class PersonneDAO implements IPersonneDAO {
 
 		return retour;
 	}
-
+	
 	@Override
 	public PersonneDTO update(PersonneDTO dto) {
 		return update(dto, null);
@@ -229,6 +235,8 @@ public class PersonneDAO implements IPersonneDAO {
 				retour = buildDTO(resultSet);
 			}
 
+			
+
 		} catch (SQLException e) {
 			throw new RuntimeException("erreure applicative", e);
 		} finally {
@@ -270,6 +278,8 @@ public class PersonneDAO implements IPersonneDAO {
 			preparedStatement.setInt(1, dto.getId());
 
 			preparedStatement.executeUpdate();
+
+			
 
 		} catch (SQLException e) {
 			throw new RuntimeException("erreure applicative", e);
