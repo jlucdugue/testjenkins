@@ -9,7 +9,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLType;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,10 +81,10 @@ public class PersonneDAO implements IPersonneDAO {
 
 	@Override
 	public PersonneDTO findById(PersonneDTO dto) {
-		Connection connection=null;
-		PreparedStatement preparedStatement=null;
-		ResultSet resultSet=null;
-		PersonneDTO retour=null;
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		PersonneDTO retour = null;
 		try {
 
 			connection = DriverManager.getConnection(
@@ -96,10 +98,6 @@ public class PersonneDAO implements IPersonneDAO {
 			if (resultSet.next()) {
 				retour = buildDTO(resultSet);
 			}
-			
-			
-
-			
 
 		} catch (SQLException e) {
 			throw new RuntimeException("erreure applicative", e);
@@ -131,11 +129,11 @@ public class PersonneDAO implements IPersonneDAO {
 		retour.setPrenom(resultSet.getString("prenom"));
 		retour.setDateNaiss(resultSet.getDate("datenaiss"));
 		retour.setTel(resultSet.getString("tel"));
-	
+
 		IPromotionDAO promotionDAO = new PromotionDAO();
-		PromotionDTO linkedPromotion  = new PromotionDTO();
+		PromotionDTO linkedPromotion = new PromotionDTO();
 		linkedPromotion.setId(resultSet.getInt("promotion_id"));
-		if (!resultSet.wasNull()){
+		if (!resultSet.wasNull()) {
 			linkedPromotion = promotionDAO.findById(linkedPromotion);
 			retour.setPromotionDTO(linkedPromotion);
 		}
@@ -144,10 +142,10 @@ public class PersonneDAO implements IPersonneDAO {
 
 	@Override
 	public PersonneDTO insert(PersonneDTO dto) {
-		Connection connection=null;
-		PreparedStatement preparedStatement=null;
-		ResultSet resultSet=null;
-		PersonneDTO retour=null;
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		PersonneDTO retour = null;
 		try {
 
 			connection = DriverManager.getConnection(
@@ -161,13 +159,11 @@ public class PersonneDAO implements IPersonneDAO {
 			Date dateNaiss = new Date(dto.getDateNaiss().getTime());
 			preparedStatement.setDate(3, dateNaiss);
 			preparedStatement.setString(4, dto.getTel());
-			
+
 			resultSet = preparedStatement.executeQuery();
 			if (resultSet.next()) {
 				retour = buildDTO(resultSet);
 			}
-
-			
 
 		} catch (SQLException e) {
 			throw new RuntimeException("erreure applicative", e);
@@ -190,18 +186,28 @@ public class PersonneDAO implements IPersonneDAO {
 
 		return retour;
 	}
-	
+
 	@Override
 	public PersonneDTO update(PersonneDTO dto) {
-		Connection connection=null;
-		PreparedStatement preparedStatement=null;
-		ResultSet resultSet=null;
-		PersonneDTO retour=null;
+		return update(dto, null);
+	}
+
+	@Override
+	public PersonneDTO update(PersonneDTO dto, Connection connectionCaller) {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		PersonneDTO retour = null;
 		try {
 
-			connection = DriverManager.getConnection(
-					"jdbc:postgresql://localhost:5432/imie", "postgres",
-					"postgres");
+			if (connectionCaller != null) {
+				connection = connectionCaller;
+			} else {
+				connection = DriverManager.getConnection(
+						"jdbc:postgresql://localhost:5432/imie", "postgres",
+						"postgres");
+
+			}
 
 			preparedStatement = connection
 					.prepareStatement("update personne set nom=?, prenom=?, datenaiss=?,tel=?, promotion_id=? where id=? returning nom, prenom, datenaiss,tel,id,promotion_id");
@@ -210,19 +216,18 @@ public class PersonneDAO implements IPersonneDAO {
 			Date dateNaiss = new Date(dto.getDateNaiss().getTime());
 			preparedStatement.setDate(3, dateNaiss);
 			preparedStatement.setString(4, dto.getTel());
-			if (dto.getPromotionDTO()!=null){
-				//preparedStatement.setInt(5, dto.getPromotionDTO().getId());
-				preparedStatement.setObject(5, dto.getPromotionDTO().getId());
+			if (dto.getPromotionDTO() != null) {
+				preparedStatement.setInt(5, dto.getPromotionDTO().getId());
+			}else{
+				preparedStatement.setNull(5,Types.INTEGER);
 			}
-			
+
 			preparedStatement.setInt(6, dto.getId());
-			
+
 			resultSet = preparedStatement.executeQuery();
 			if (resultSet.next()) {
 				retour = buildDTO(resultSet);
 			}
-
-			
 
 		} catch (SQLException e) {
 			throw new RuntimeException("erreure applicative", e);
@@ -234,8 +239,10 @@ public class PersonneDAO implements IPersonneDAO {
 				if (preparedStatement != null && !preparedStatement.isClosed()) {
 					preparedStatement.close();
 				}
-				if (connection != null && !connection.isClosed()) {
-					connection.close();
+				if (connectionCaller == null) {
+					if (connection != null && !connection.isClosed()) {
+						connection.close();
+					}
 				}
 
 			} catch (SQLException e) {
@@ -245,13 +252,13 @@ public class PersonneDAO implements IPersonneDAO {
 
 		return retour;
 	}
-	
+
 	@Override
 	public void delete(PersonneDTO dto) {
-		Connection connection=null;
-		PreparedStatement preparedStatement=null;
-		ResultSet resultSet=null;
-		PersonneDTO retour=null;
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		PersonneDTO retour = null;
 		try {
 
 			connection = DriverManager.getConnection(
@@ -261,10 +268,8 @@ public class PersonneDAO implements IPersonneDAO {
 			preparedStatement = connection
 					.prepareStatement("delete from personne where id =?");
 			preparedStatement.setInt(1, dto.getId());
-			
-			preparedStatement.executeUpdate();
 
-			
+			preparedStatement.executeUpdate();
 
 		} catch (SQLException e) {
 			throw new RuntimeException("erreure applicative", e);
@@ -284,6 +289,68 @@ public class PersonneDAO implements IPersonneDAO {
 				throw new RuntimeException("erreure applicative", e);
 			}
 		}
+	}
+
+	@Override
+	public List<PersonneDTO> findByDTO(PersonneDTO findParameter) {
+		return findByDTO(findParameter, null);
+	}
+
+	@Override
+	public List<PersonneDTO> findByDTO(PersonneDTO findParameter,
+			Connection connectionCaller) {
+		Connection connection = null;
+		Statement statement = null;
+		ResultSet resultSet = null;
+		List<PersonneDTO> retour = new ArrayList<PersonneDTO>();
+		try {
+
+			if (connectionCaller == null) {
+				connection = DriverManager.getConnection(
+						"jdbc:postgresql://localhost:5432/imie", "postgres",
+						"postgres");
+			} else {
+				connection = connectionCaller;
+			}
+
+			statement = connection.createStatement();
+			String query = "select id, nom, prenom, datenaiss, tel, promotion_id from personne";
+
+			if (findParameter.getPromotionDTO() != null) {
+				query=query.concat(" where promotion_id =".concat(findParameter
+						.getPromotionDTO().getId().toString()));
+			}
+
+			resultSet = statement.executeQuery(query);
+
+			while (resultSet.next()) {
+
+				retour.add(buildDTO(resultSet));
+			}
+
+		} catch (SQLException e) {
+			throw new RuntimeException("erreure applicative", e);
+		} finally {
+			try {
+				if (resultSet != null && !resultSet.isClosed()) {
+					resultSet.close();
+				}
+				if (statement != null && !statement.isClosed()) {
+					statement.close();
+				}
+				if (connectionCaller == null) {
+					if (connection != null && !connection.isClosed()) {
+						connection.close();
+					}
+				}
+
+			} catch (SQLException e) {
+				throw new RuntimeException("erreure applicative", e);
+			}
+		}
+
+		return retour;
+
 	}
 
 }
