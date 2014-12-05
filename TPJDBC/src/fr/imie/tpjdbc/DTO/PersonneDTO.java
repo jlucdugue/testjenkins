@@ -16,6 +16,9 @@ public class PersonneDTO {
 	private Date dateNaiss;
 	private String tel;
 	private Integer Id;
+	
+	private PromotionDTO promotionDTO;
+	
 	/**
 	 * @return the nom
 	 */
@@ -76,7 +79,20 @@ public class PersonneDTO {
 	public void setId(Integer id) {
 		Id = id;
 	}
+	/**
+	 * @return the promotionDTO
+	 */
+	public PromotionDTO getPromotionDTO() {
+		return promotionDTO;
+	}
+	/**
+	 * @param promotionDTO the promotionDTO to set
+	 */
+	public void setPromotionDTO(PromotionDTO promotionDTO) {
+		this.promotionDTO = promotionDTO;
+	}
 
+	
 
 
 }
