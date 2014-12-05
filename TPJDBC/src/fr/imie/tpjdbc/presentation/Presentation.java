@@ -10,8 +10,11 @@ import java.util.List;
 import java.util.Scanner;
 
 import fr.imie.tpjdbc.DAO.IPersonneDAO;
+import fr.imie.tpjdbc.DAO.IPromotionDAO;
 import fr.imie.tpjdbc.DAO.PersonneDAO;
+import fr.imie.tpjdbc.DAO.PromotionDAO;
 import fr.imie.tpjdbc.DTO.PersonneDTO;
+import fr.imie.tpjdbc.DTO.PromotionDTO;
 
 /**
  * @author imie
@@ -38,6 +41,7 @@ public class Presentation implements IPresentation {
 
 		// instantiation du DAO
 		IPersonneDAO personneDAO = new PersonneDAO();
+		IPromotionDAO promotionDAO = new PromotionDAO();
 
 		// TP1
 		Boolean endAppli = false;
@@ -50,8 +54,9 @@ public class Presentation implements IPresentation {
 			System.out.println("1 : lister tous les users");
 			System.out.println("2 : detail d'un user     ");
 			System.out.println("3 : insérer un user      ");
-			System.out.println("4 : supprimer un user      ");
-			System.out.println("5 : modifier un user      ");
+			System.out.println("4 : supprimer un user    ");
+			System.out.println("5 : modifier un user     ");
+			System.out.println("6 : supprimer une promo  ");
 			System.out.println("-------------------------");
 
 			Integer menuNumber = inputInteger();
@@ -96,39 +101,58 @@ public class Presentation implements IPresentation {
 				System.out.format("nouvel id inséré : %s\n",
 						personneDTO.getId());
 				break;
-			case 5:
 
-
-				selectedPersonne = viewAndSelectPersonne(personneDAO);
-				selectedPersonne = personneDAO.findById(selectedPersonne);
-				System.out.format("nom :  %s",selectedPersonne.getNom());
-				if(questionModif()){
-					selectedPersonne.setNom(scanner.nextLine());
-				}
-				
-				System.out.format("prenom :  %s",selectedPersonne.getPrenom());
-				if(questionModif()){
-					selectedPersonne.setPrenom(scanner.nextLine());
-				}
-				
-				System.out.format("date de naisance :  %s",selectedPersonne.getDateNaiss());
-				if(questionModif()){
-					selectedPersonne.setDateNaiss(inputDate());
-				}
-				
-				System.out.format("tel :  %s",selectedPersonne.getTel());
-				if(questionModif()){
-					selectedPersonne.setTel(scanner.nextLine());
-				}
-				
-				personneDAO.update(selectedPersonne);
-	
-				break;
-				
 			case 4:
 
 				selectedPersonne = viewAndSelectPersonne(personneDAO);
 				personneDAO.delete(selectedPersonne);
+				break;
+
+			case 5:
+
+				selectedPersonne = viewAndSelectPersonne(personneDAO);
+				selectedPersonne = personneDAO.findById(selectedPersonne);
+				System.out.format("nom :  %s", selectedPersonne.getNom());
+				if (questionModif()) {
+					selectedPersonne.setNom(scanner.nextLine());
+				}
+
+				System.out.format("prenom :  %s", selectedPersonne.getPrenom());
+				if (questionModif()) {
+					selectedPersonne.setPrenom(scanner.nextLine());
+				}
+
+				System.out.format("date de naisance :  %s",
+						selectedPersonne.getDateNaiss());
+				if (questionModif()) {
+					selectedPersonne.setDateNaiss(inputDate());
+				}
+
+				System.out.format("tel :  %s", selectedPersonne.getTel());
+				if (questionModif()) {
+					selectedPersonne.setTel(scanner.nextLine());
+				}
+
+				personneDAO.update(selectedPersonne);
+
+				break;
+			case 6:
+				List<PromotionDTO> promotionDTOs = promotionDAO.findAll();
+
+				Integer numLigne = 1;
+
+				for (PromotionDTO promotionDTO : promotionDTOs) {
+					System.out.format("%d : %s \n", numLigne++,
+							promotionDTO.getLibelle());
+				}
+
+				input = null;
+				input = inputInteger();
+				PromotionDTO selectedPromotion =  promotionDTOs.get(input - 1);
+				promotionDAO.delete(selectedPromotion);
+				
+				
+				
 				break;
 			default:
 				break;
@@ -143,8 +167,8 @@ public class Presentation implements IPresentation {
 		Boolean retour = false;
 		System.out.print(" || modifier le champ o/n : ");
 		String input = scanner.nextLine();
-		if (input.compareTo("o")==0){
-			retour= true;
+		if (input.compareTo("o") == 0) {
+			retour = true;
 		}
 		System.out.println();
 		return retour;
@@ -157,18 +181,19 @@ public class Presentation implements IPresentation {
 		Integer numLigne = 1;
 
 		for (PersonneDTO personneDTO : personneDTOs) {
-			System.out.format("%d : %s | %s | %s\n", numLigne++,
-					personneDTO.getNom(), personneDTO.getPrenom(),personneDTO.getPromotionDTO()!=null?personneDTO.getPromotionDTO().getLibelle():"");
+			System.out.format("%d : %s | %s | %s\n", numLigne++, personneDTO
+					.getNom(), personneDTO.getPrenom(), personneDTO
+					.getPromotionDTO() != null ? personneDTO.getPromotionDTO()
+					.getLibelle() : "");
 		}
 		return personneDTOs;
-		
-		
+
 	}
-	
-	private PersonneDTO viewAndSelectPersonne(IPersonneDAO personneDAO){
-		
-		List<PersonneDTO> personneDTOs =  viewPersonne(personneDAO);
-		
+
+	private PersonneDTO viewAndSelectPersonne(IPersonneDAO personneDAO) {
+
+		List<PersonneDTO> personneDTOs = viewPersonne(personneDAO);
+
 		Integer input = null;
 		input = inputInteger();
 		PersonneDTO selectedPersonne = personneDTOs.get(input - 1);
@@ -205,8 +230,7 @@ public class Presentation implements IPresentation {
 			}
 		}
 		return input;
-		
-		
+
 	}
 
 }
