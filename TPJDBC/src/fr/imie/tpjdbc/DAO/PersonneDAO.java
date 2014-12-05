@@ -215,6 +215,8 @@ public class PersonneDAO implements IPersonneDAO {
 				preparedStatement.setObject(5, dto.getPromotionDTO().getId());
 			}
 			
+			preparedStatement.setInt(6, dto.getId());
+			
 			resultSet = preparedStatement.executeQuery();
 			if (resultSet.next()) {
 				retour = buildDTO(resultSet);
@@ -257,7 +259,7 @@ public class PersonneDAO implements IPersonneDAO {
 					"postgres");
 
 			preparedStatement = connection
-					.prepareStatement("delete from personne where id =? returning nom, prenom, datenaiss,tel,id");
+					.prepareStatement("delete from personne where id =?");
 			preparedStatement.setInt(1, dto.getId());
 			
 			preparedStatement.executeUpdate();
