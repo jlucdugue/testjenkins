@@ -33,7 +33,7 @@ public class DataInit implements HttpSessionListener {
          UserDTO userDTO2 = new UserDTO();
          userDTO2.setId(2);
          userDTO2.setLogin("clark");
-         userDTO1.setPassword("superman");
+         userDTO2.setPassword("superman");
          
          List<UserDTO> userDTOs = new ArrayList<UserDTO>();
          userDTOs.add(userDTO1);

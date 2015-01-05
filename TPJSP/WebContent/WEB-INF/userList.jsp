@@ -23,7 +23,9 @@
 				for (UserDTO userDTO : dtos) {
 			%>
 			<tr>
-				<td><%=userDTO.getLogin()%></td>
+				<td><a href="UserForm?id=<%=userDTO.getId()%>">
+						<div><%=userDTO.getLogin()%></div>
+				</a></td>
 			</tr>
 
 			<%
