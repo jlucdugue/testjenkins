@@ -11,6 +11,7 @@
 <title>Insert title here</title>
 </head>
 <body>
+	<jsp:include page="header.jsp"></jsp:include>
 	<div
 		class="uk-panel uk-panel-box uk-panel-header uk-width-1-2 uk-container-center uk-panel-box-secondary">
 		<form class="uk-form uk-form-horizontal">
@@ -24,8 +25,7 @@
 			<div class="uk-form-row">
 				<label for="passwordInput" class="uk-form-label">password</label>
 				<div class="uk-form-controls">
-					<input type="password" id="passwordInput"
-						value="${user.password}" />
+					<input type="password" id="passwordInput" value="${user.password}" />
 				</div>
 			</div>
 		</form>

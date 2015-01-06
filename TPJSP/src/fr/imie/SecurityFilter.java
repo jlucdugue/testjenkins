@@ -74,7 +74,11 @@ public class SecurityFilter implements Filter {
 			if(askedResource==null){
 				askedResource="UserList";
 			}
+			httpServletRequest.getSession()
+			.removeAttribute("askedResource");
 			httpServletResponse.sendRedirect(askedResource);
+		} else if (connectedUser != null && recentConnectdUser == null) {
+			httpServletResponse.sendRedirect("Login");
 		}
 
 	}

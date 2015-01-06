@@ -12,7 +12,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+	<jsp:include page="header.jsp"></jsp:include>
 	<div
 		class="uk-panel uk-panel-box uk-panel-header uk-width-1-2 uk-container-center uk-panel-box-secondary">
 		<table class="uk-table uk-table-hover uk-table-striped ">
