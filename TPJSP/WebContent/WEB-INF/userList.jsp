@@ -1,7 +1,8 @@
-<%@page import="fr.imie.UserDTO"%>
-<%@page import="java.util.List"%>
+<%@ page import="fr.imie.UserDTO"%>
+<%@ page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE>
 <html>
 <head>
@@ -18,19 +19,15 @@
 			<tr>
 				<th>login</th>
 			</tr>
-			<%
-				List<UserDTO> dtos = (List<UserDTO>) request.getAttribute("users");
-				for (UserDTO userDTO : dtos) {
-			%>
-			<tr>
-				<td><a href="UserForm?id=<%=userDTO.getId()%>">
-						<div><%=userDTO.getLogin()%></div>
-				</a></td>
-			</tr>
-
-			<%
-				}
-			%>
+			<c:forEach items="${users}" var="user">
+				<tr>
+					<td><a href="UserForm?id=${user.id}">
+							<div>
+								<c:out value="${user.login }"></c:out>
+							</div>
+					</a></td>
+				</tr>
+			</c:forEach>
 		</table>
 	</div>
 
