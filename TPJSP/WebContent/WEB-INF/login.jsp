@@ -26,11 +26,15 @@
 					<input type="password" id="passwordInput" name="passwordInput" />
 				</div>
 			</div>
+			<c:if test="${! empty mainErrorMessage}">
+				<div class="uk-form-row">
+					<span class="uk-alert uk-alert-danger"><c:out
+							value="${mainErrorMessage}"></c:out> </span>
+				</div>
+			</c:if>
 			<div class="uk-form-row">
-				<span><c:out value="${mainErrorMessage}"></c:out> </span>
-			</div>
-			<div class="uk-form-row">
-				<input type="submit" value="login" />
+
+				<button class="uk-button" type="submit">login</button>
 			</div>
 		</form>
 	</div>
