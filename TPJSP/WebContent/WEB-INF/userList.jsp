@@ -18,15 +18,29 @@
 		<table class="uk-table uk-table-hover uk-table-striped ">
 			<tr>
 				<th>login</th>
+				<th></th>
 			</tr>
 			<c:forEach items="${users}" var="user">
 				<tr>
-					<td><a href="UserForm?id=${user.id}">
-							<div>
-								<c:out value="${user.login }"></c:out>
-							</div>
-					</a></td>
+					<td><c:out value="${user.login }"></c:out> </a>
+					<td>
+						<div style="display: inline-block;">
+							<c:url value="UserForm" var="userEditURL">
+								<c:param name="id" value="${user.id}">
+								</c:param>
+							</c:url>
+							<a href="${userEditURL}" class="uk-button">éditer</a>
+
+						</div>
+						<div style="display: inline-block;">
+							<form method="post">
+								<input type="hidden" value="${user.id}" name="userId" />
+								<button type="submit" class="uk-button">supprimer</button>
+							</form>
+						</div>
+					</td>
 				</tr>
+
 			</c:forEach>
 		</table>
 	</div>

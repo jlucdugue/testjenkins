@@ -1,6 +1,7 @@
 package fr.imie;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -43,7 +44,25 @@ public class UserList extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
+		String idString = request.getParameter("userId");
+		Integer id = Integer.valueOf(idString);
+		//recherche du user à supprimer
+		List<UserDTO> userDTOs = (List<UserDTO>) request.getSession().getAttribute("userDTOs");
+		UserDTO userToDelete = null;
+		for (UserDTO userDTO : userDTOs) {
+			if(userDTO.getId()==id){
+				userToDelete= userDTO;
+				break;
+			}
+		}
+		//suppression du user = suppression dans la session (même référence)
+		if (userToDelete!=null){
+			userDTOs.remove(userToDelete);
+		}
+		//execution de la vue
+		request.setAttribute("users", userDTOs);
+		request.getRequestDispatcher("/WEB-INF/userList.jsp").forward(request, response);
 	}
 
 }
