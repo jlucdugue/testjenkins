@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE>
 <html>
 <head>
@@ -16,16 +17,21 @@
 			<div class="uk-form-row">
 				<label for="loginInput" class="uk-form-label">login</label>
 				<div class="uk-form-controls">
-					<input type="text" id="loginInput" name="loginInput"/>
+					<input type="text" id="loginInput" name="loginInput" />
 				</div>
 			</div>
 			<div class="uk-form-row">
 				<label for="passwordInput" class="uk-form-label">password</label>
 				<div class="uk-form-controls">
-					<input type="password" id="passwordInput" name="passwordInput"/>
+					<input type="password" id="passwordInput" name="passwordInput" />
 				</div>
 			</div>
-			<input type="submit" value="login"/>
+			<div class="uk-form-row">
+				<span><c:out value="${mainErrorMessage}"></c:out> </span>
+			</div>
+			<div class="uk-form-row">
+				<input type="submit" value="login" />
+			</div>
 		</form>
 	</div>
 </body>

@@ -54,6 +54,9 @@ public class Login extends HttpServlet {
 		
 		if (securedUser!=null){
 			request.getSession().setAttribute("connectedUser", securedUser);
+		}else{
+			request.setAttribute("mainErrorMessage", "mauvaise connection");
+			request.getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);
 		}
 
 	}
