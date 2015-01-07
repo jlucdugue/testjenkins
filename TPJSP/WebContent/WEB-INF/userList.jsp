@@ -22,15 +22,15 @@
 			</tr>
 			<c:forEach items="${users}" var="user">
 				<tr>
-					<td><c:out value="${user.login }"></c:out> </a>
-					<td>
+					<td class="uk-width-6-10"><c:out value="${user.login }"></c:out>
+						</a>
+					<td class="uk-width-4-10">
 						<div style="display: inline-block;">
 							<c:url value="UserForm" var="userEditURL">
 								<c:param name="id" value="${user.id}">
 								</c:param>
 							</c:url>
 							<a href="${userEditURL}" class="uk-button">éditer</a>
-
 						</div>
 						<div style="display: inline-block;">
 							<form method="post">
@@ -43,6 +43,13 @@
 
 			</c:forEach>
 		</table>
+
+		<c:url value="UserForm" var="userCreateURL">
+			<c:param name="id" value="create">
+			</c:param>
+		</c:url>
+		<a href="${userCreateURL}" class="uk-button">créer</a>
+
 	</div>
 
 </body>

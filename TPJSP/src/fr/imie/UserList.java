@@ -51,7 +51,7 @@ public class UserList extends HttpServlet {
 		List<UserDTO> userDTOs = (List<UserDTO>) request.getSession().getAttribute("userDTOs");
 		UserDTO userToDelete = null;
 		for (UserDTO userDTO : userDTOs) {
-			if(userDTO.getId()==id){
+			if(userDTO.getId().equals(id)){
 				userToDelete= userDTO;
 				break;
 			}
