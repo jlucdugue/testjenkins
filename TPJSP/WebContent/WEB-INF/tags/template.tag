@@ -9,8 +9,19 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<jsp:include page="header.jsp"></jsp:include>
-	<jsp:doBody></jsp:doBody>
-	<span>merci pour ce cours passé enssemble</span>
+	
+		<header class="uk-panel uk-panel-box uk-panel-box-secondary uk-position-up">
+			<jsp:include page="header.jsp"></jsp:include>
+		</header>
+		<section>
+			<jsp:doBody></jsp:doBody>
+		</section>
+		<footer class="uk-panel uk-panel-box uk-panel-box-secondary uk-position-bottom uk-width-1-1">
+			<div class="uk-text-center">
+				<span >TP réulisé dans le cadre des cours de
+					l'IMIE</span>
+			</div>
+		</footer>
+	
 </body>
 </html>

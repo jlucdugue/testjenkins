@@ -23,6 +23,9 @@
 						name="password" />
 				</div>
 			</div>
+			<div class="uk-form-row">
+			<c:url value="UserList" var="listeURL" ></c:url>
+			<a class="uk-button" href="${listeURL}" >retour</a>
 			<c:choose>
 				<c:when test="${empty user}">
 					<button type="submit" name="create" class="uk-button">créer</button>
@@ -31,6 +34,7 @@
 					<button type="submit" name="update" class="uk-button">modifier</button>
 				</c:otherwise>
 			</c:choose>
+			</div>
 		</form>
 	</div>
 </t:template>
