@@ -9,13 +9,23 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.imie.tpjdbc.AJDBC;
 import fr.imie.tpjdbc.DTO.PersonneDTO;
 import fr.imie.tpjdbc.DTO.PromotionDTO;
 
-public class PromotionDAO implements IPromotionDAO {
+public class PromotionDAO extends AJDBC implements IPromotionDAO {
 
-	public PromotionDAO() {
+	private static PromotionDAO instance = null;
+	
+	private PromotionDAO() {
 		// TODO Auto-generated constructor stub
+	}
+	
+	public static synchronized PromotionDAO getInstance(){
+		if(instance==null){
+			instance= new PromotionDAO();
+		}
+		return instance;
 	}
 
 	@Override
@@ -26,9 +36,7 @@ public class PromotionDAO implements IPromotionDAO {
 		List<PromotionDTO> retour = new ArrayList<PromotionDTO>();
 		try {
 
-			connection = DriverManager.getConnection(
-					"jdbc:postgresql://localhost:5432/imie", "postgres",
-					"postgres");
+			connection = provideConnection();
 
 			statement = connection.createStatement();
 			resultSet = statement
@@ -49,13 +57,10 @@ public class PromotionDAO implements IPromotionDAO {
 				if (statement != null && !statement.isClosed()) {
 					statement.close();
 				}
-				if (connection != null && !connection.isClosed()) {
-					connection.close();
-				}
-
 			} catch (SQLException e) {
 				throw new RuntimeException("erreure applicative", e);
 			}
+			closeConnection(connection);
 		}
 
 		return retour;
@@ -76,9 +81,7 @@ public class PromotionDAO implements IPromotionDAO {
 		PromotionDTO retour = null;
 		try {
 
-			connection = DriverManager.getConnection(
-					"jdbc:postgresql://localhost:5432/imie", "postgres",
-					"postgres");
+			connection = provideConnection();
 
 			preparedStatement = connection
 					.prepareStatement("select id, libelle from promotion where id=?");
@@ -100,13 +103,11 @@ public class PromotionDAO implements IPromotionDAO {
 				if (preparedStatement != null && !preparedStatement.isClosed()) {
 					preparedStatement.close();
 				}
-				if (connection != null && !connection.isClosed()) {
-					connection.close();
-				}
 
 			} catch (SQLException e) {
 				throw new RuntimeException("erreure applicative", e);
 			}
+			closeConnection(connection);
 		}
 
 		return retour;
@@ -146,11 +147,11 @@ public class PromotionDAO implements IPromotionDAO {
 				if (preparedStatement != null && !preparedStatement.isClosed()) {
 					preparedStatement.close();
 				}
-				if (connectionCaller == null && connection != null && !connection.isClosed()) {
-					connection.close();
-				}
 			} catch (SQLException e) {
 				throw new RuntimeException("erreur applicative", e);
+			}
+			if (connectionCaller!=null){
+				closeConnection(connection);
 			}
 		}
 

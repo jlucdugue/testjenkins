@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.imie.tpjdbc.presentation;
 
 import java.text.ParseException;
@@ -41,7 +38,7 @@ public class Presentation implements IPresentation {
 		//IPersonneDAO personneDAO = new PersonneDAO();
 		//IPromotionDAO promotionDAO = new PromotionDAO();
 
-		IEcoleService service = new EcoleService();
+		IEcoleService service = EcoleService.getInstance();
 		
 		// TP1
 		Boolean endAppli = false;

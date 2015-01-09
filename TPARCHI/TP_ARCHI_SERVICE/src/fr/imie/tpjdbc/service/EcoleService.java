@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import fr.imie.tpjdbc.AJDBC;
 import fr.imie.tpjdbc.DAO.IPersonneDAO;
 import fr.imie.tpjdbc.DAO.IPromotionDAO;
 import fr.imie.tpjdbc.DAO.PersonneDAO;
@@ -14,10 +15,26 @@ import fr.imie.tpjdbc.DAO.PromotionDAO;
 import fr.imie.tpjdbc.DTO.PersonneDTO;
 import fr.imie.tpjdbc.DTO.PromotionDTO;
 
-public class EcoleService implements IEcoleService {
+public class EcoleService extends AJDBC implements IEcoleService {
 
-	private IPersonneDAO personneDAO = new PersonneDAO();
-	private IPromotionDAO promotionDAO = new PromotionDAO();
+	private IPersonneDAO personneDAO = PersonneDAO.getInstance();
+	private IPromotionDAO promotionDAO = PromotionDAO.getInstance();
+	private static EcoleService instance;
+
+	/**
+	 * 
+	 */
+	private EcoleService() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public static synchronized EcoleService getInstance() {
+		if (instance == null) {
+			instance = new EcoleService();
+		}
+		return instance;
+	}
 
 	@Override
 	public PersonneDTO insertPersonne(PersonneDTO personneDTO) {
@@ -32,7 +49,21 @@ public class EcoleService implements IEcoleService {
 
 	@Override
 	public PersonneDTO findPersonneById(PersonneDTO selectedPersonne) {
-		return personneDAO.findById(selectedPersonne);
+		PersonneDTO personneDTO = personneDAO.findById(selectedPersonne);
+		compeletePersonneDTO(personneDTO);
+		return personneDTO;
+	}
+
+	/**
+	 * @param personneDTO
+	 */
+	private void compeletePersonneDTO(PersonneDTO personneDTO) {
+		if (personneDTO.getPromotionDTO() != null
+				&& personneDTO.getPromotionDTO().getId() != null) {
+			PromotionDTO findedPromotion = promotionDAO.findById(personneDTO
+					.getPromotionDTO());
+			personneDTO.setPromotionDTO(findedPromotion);
+		}
 	}
 
 	@Override
@@ -55,12 +86,11 @@ public class EcoleService implements IEcoleService {
 		PersonneDTO retour = null;
 		try {
 
-			connection = DriverManager.getConnection(
-					"jdbc:postgresql://localhost:5432/imie", "postgres",
-					"postgres");
+			connection = provideConnection();
+
 			connection.setAutoCommit(false);
 
-//			IPersonneDAO personneDAO = new PersonneDAO();
+			// IPersonneDAO personneDAO = new PersonneDAO();
 			PersonneDTO findParameter = new PersonneDTO();
 			findParameter.setPromotionDTO(selectedPromotion);
 			List<PersonneDTO> findedPersonne = personneDAO.findByDTO(
@@ -70,9 +100,9 @@ public class EcoleService implements IEcoleService {
 				personneDTO.setPromotionDTO(null);
 				personneDAO.update(personneDTO, connection);
 			}
-			
-			promotionDAO.delete(selectedPromotion,connection);
-			
+
+			promotionDAO.delete(selectedPromotion, connection);
+
 			connection.commit();
 
 		} catch (SQLException e) {
@@ -90,18 +120,20 @@ public class EcoleService implements IEcoleService {
 				if (preparedStatement != null && !preparedStatement.isClosed()) {
 					preparedStatement.close();
 				}
-				if (connection != null && !connection.isClosed()) {
-					connection.close();
-				}
 			} catch (SQLException e) {
 				throw new RuntimeException("erreur applicative", e);
 			}
+			closeConnection(connection);
 		}
 	}
 
 	@Override
 	public List<PersonneDTO> findAllPersonne() {
-		return personneDAO.findAll();
+		List<PersonneDTO> personneDTOs = personneDAO.findAll();
+		for (PersonneDTO personneDTO : personneDTOs) {
+			compeletePersonneDTO(personneDTO);
+		}
+		return personneDTOs;
 	}
 
 }
