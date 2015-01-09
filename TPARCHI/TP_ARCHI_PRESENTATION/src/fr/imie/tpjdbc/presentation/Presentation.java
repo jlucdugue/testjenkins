@@ -6,9 +6,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
+import fr.imie.tpjdbc.AbstractFactory;
 import fr.imie.tpjdbc.DTO.PersonneDTO;
 import fr.imie.tpjdbc.DTO.PromotionDTO;
-import fr.imie.tpjdbc.service.EcoleService;
 import fr.imie.tpjdbc.service.IEcoleService;
 
 /**
@@ -18,12 +18,14 @@ import fr.imie.tpjdbc.service.IEcoleService;
 public class Presentation implements IPresentation {
 
 	Scanner scanner;
+	IEcoleService service=null;
 
 	/**
 	 * 
 	 */
-	public Presentation() {
+	public Presentation(AbstractFactory factory) {
 		scanner = new Scanner(System.in);
+		service = factory.createEcoleService();
 	}
 
 	/*
@@ -35,11 +37,11 @@ public class Presentation implements IPresentation {
 	public void start() {
 
 		// instantiation du DAO
-		//IPersonneDAO personneDAO = new PersonneDAO();
-		//IPromotionDAO promotionDAO = new PromotionDAO();
+		// IPersonneDAO personneDAO = new PersonneDAO();
+		// IPromotionDAO promotionDAO = new PromotionDAO();
 
-		IEcoleService service = EcoleService.getInstance();
 		
+
 		// TP1
 		Boolean endAppli = false;
 		List<PersonneDTO> personneDTOs = null;
@@ -94,9 +96,9 @@ public class Presentation implements IPresentation {
 				System.out.print("date de naissance :  ");
 				Date date = inputDate();
 				personneDTO.setDateNaiss(date);
-				//personneDTO = personneDAO.insert(personneDTO);
+				// personneDTO = personneDAO.insert(personneDTO);
 				personneDTO = service.insertPersonne(personneDTO);
-				
+
 				System.out.format("nouvel id inséré : %s\n",
 						personneDTO.getId());
 				break;
@@ -104,15 +106,15 @@ public class Presentation implements IPresentation {
 			case 4:
 
 				selectedPersonne = viewAndSelectPersonne(service);
-				//personneDAO.delete(selectedPersonne);
+				// personneDAO.delete(selectedPersonne);
 				service.deletePersonne(selectedPersonne);
 				break;
 
 			case 5:
 
 				selectedPersonne = viewAndSelectPersonne(service);
-				//selectedPersonne = personneDAO.findById(selectedPersonne);
-				selectedPersonne = service.findPersonneById(selectedPersonne);				
+				// selectedPersonne = personneDAO.findById(selectedPersonne);
+				selectedPersonne = service.findPersonneById(selectedPersonne);
 				System.out.format("nom :  %s", selectedPersonne.getNom());
 				if (questionModif()) {
 					selectedPersonne.setNom(scanner.nextLine());
@@ -134,12 +136,12 @@ public class Presentation implements IPresentation {
 					selectedPersonne.setTel(scanner.nextLine());
 				}
 
-				//personneDAO.update(selectedPersonne);
+				// personneDAO.update(selectedPersonne);
 				service.updatePersonne(selectedPersonne);
 
 				break;
 			case 6:
-				//List<PromotionDTO> promotionDTOs = promotionDAO.findAll();
+				// List<PromotionDTO> promotionDTOs = promotionDAO.findAll();
 				List<PromotionDTO> promotionDTOs = service.findAllPromotions();
 
 				Integer numLigne = 1;
@@ -151,12 +153,10 @@ public class Presentation implements IPresentation {
 
 				input = null;
 				input = inputInteger();
-				PromotionDTO selectedPromotion =  promotionDTOs.get(input - 1);
-				//promotionDAO.delete(selectedPromotion);
+				PromotionDTO selectedPromotion = promotionDTOs.get(input - 1);
+				// promotionDAO.delete(selectedPromotion);
 				service.deletePromotion(selectedPromotion);
-				
-				
-				
+
 				break;
 			default:
 				break;

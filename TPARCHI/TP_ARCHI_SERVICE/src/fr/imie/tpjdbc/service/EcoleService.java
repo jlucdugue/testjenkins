@@ -1,37 +1,36 @@
 package fr.imie.tpjdbc.service;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 import fr.imie.tpjdbc.AJDBC;
+import fr.imie.tpjdbc.AbstractFactory;
 import fr.imie.tpjdbc.DAO.IPersonneDAO;
 import fr.imie.tpjdbc.DAO.IPromotionDAO;
-import fr.imie.tpjdbc.DAO.PersonneDAO;
-import fr.imie.tpjdbc.DAO.PromotionDAO;
 import fr.imie.tpjdbc.DTO.PersonneDTO;
 import fr.imie.tpjdbc.DTO.PromotionDTO;
 
 public class EcoleService extends AJDBC implements IEcoleService {
 
-	private IPersonneDAO personneDAO = PersonneDAO.getInstance();
-	private IPromotionDAO promotionDAO = PromotionDAO.getInstance();
+	private IPersonneDAO personneDAO = null;
+	private IPromotionDAO promotionDAO = null;
 	private static EcoleService instance;
 
 	/**
 	 * 
 	 */
-	private EcoleService() {
+	private EcoleService(AbstractFactory factory) {
 		super();
-		// TODO Auto-generated constructor stub
+		personneDAO = factory.createPersonneDAO();
+		promotionDAO = factory.createPromotionDAO();
 	}
 
-	public static synchronized EcoleService getInstance() {
+	public static synchronized EcoleService getInstance(AbstractFactory factory) {
 		if (instance == null) {
-			instance = new EcoleService();
+			instance = new EcoleService(factory);
 		}
 		return instance;
 	}

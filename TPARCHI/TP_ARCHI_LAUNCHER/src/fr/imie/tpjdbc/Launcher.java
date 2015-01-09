@@ -1,7 +1,6 @@
 package fr.imie.tpjdbc;
 
 import fr.imie.tpjdbc.presentation.IPresentation;
-import fr.imie.tpjdbc.presentation.Presentation;
 
 /**
  * 
@@ -24,7 +23,8 @@ public class Launcher {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		IPresentation presentation = new Presentation();
+		AbstractFactory factory = new ConcreteFactory();
+		IPresentation presentation = factory.createPresentation();
 		presentation.start();
 	}
 
