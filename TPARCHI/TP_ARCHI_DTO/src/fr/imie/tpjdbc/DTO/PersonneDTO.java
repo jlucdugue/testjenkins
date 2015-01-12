@@ -16,6 +16,7 @@ public class PersonneDTO {
 	private Date dateNaiss;
 	private String tel;
 	private Integer Id;
+	private String password;
 	
 	private PromotionDTO promotionDTO;
 	
@@ -91,6 +92,14 @@ public class PersonneDTO {
 	public void setPromotionDTO(PromotionDTO promotionDTO) {
 		this.promotionDTO = promotionDTO;
 	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	
 
 	
 

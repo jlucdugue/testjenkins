@@ -14,8 +14,7 @@
 			</tr>
 			<c:forEach items="${users}" var="user">
 				<tr>
-					<td class="uk-width-6-10"><c:out value="${user.login }"></c:out>
-						</a>
+					<td class="uk-width-6-10"><c:out value="${user.nom}"></c:out>						
 					<td class="uk-width-4-10">
 						<div style="display: inline-block;">
 							<c:url value="UserForm" var="userEditURL">

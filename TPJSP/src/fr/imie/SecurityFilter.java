@@ -13,7 +13,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.resteasy.spi.HttpResponse;
+import fr.imie.tpjdbc.DTO.PersonneDTO;
 
 /**
  * Servlet Filter implementation class SecurityFilter
@@ -56,7 +56,7 @@ public class SecurityFilter implements Filter {
 			resourceAllow = false;
 		}
 
-		UserDTO connectedUser = (UserDTO) httpServletRequest.getSession()
+		PersonneDTO connectedUser = (PersonneDTO) httpServletRequest.getSession()
 				.getAttribute("connectedUser");
 
 		if (!resourceAllow && connectedUser == null) {
@@ -66,7 +66,7 @@ public class SecurityFilter implements Filter {
 			chain.doFilter(request, response);
 		}
 
-		UserDTO recentConnectdUser = (UserDTO) httpServletRequest.getSession()
+		PersonneDTO recentConnectdUser = (PersonneDTO) httpServletRequest.getSession()
 				.getAttribute("connectedUser");
 		if (connectedUser == null && recentConnectdUser != null) {
 			String askedResource = (String) httpServletRequest.getSession()

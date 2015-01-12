@@ -7,6 +7,6 @@
 <a class="uk-button" href="Deconnect">Deconnecter</a>
 </div>
 <div class="">
-<span>Welcome <c:out value="${connectedUser.login}"></c:out> </span>
+<span>Welcome <c:out value="${connectedUser.nom}"></c:out> </span>
 </div>
 </div>

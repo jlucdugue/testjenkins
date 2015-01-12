@@ -56,7 +56,7 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 
 			statement = connection.createStatement();
 			resultSet = statement
-					.executeQuery("select id, nom, prenom, datenaiss, tel, promotion_id from personne");
+					.executeQuery("select id, nom, prenom, datenaiss, tel, promotion_id, password from personne");
 
 			while (resultSet.next()) {
 
@@ -121,6 +121,7 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 		retour.setPrenom(resultSet.getString("prenom"));
 		retour.setDateNaiss(resultSet.getDate("datenaiss"));
 		retour.setTel(resultSet.getString("tel"));
+		retour.setPassword(resultSet.getString("password"));
 
 		PromotionDTO linkedPromotion = new PromotionDTO();
 		linkedPromotion.setId(resultSet.getInt("promotion_id"));

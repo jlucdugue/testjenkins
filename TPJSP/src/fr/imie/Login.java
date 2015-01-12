@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fr.imie.tpjdbc.DTO.PersonneDTO;
+
 /**
  * Servlet implementation class Login
  */
@@ -42,11 +44,11 @@ public class Login extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		String login = request.getParameter("loginInput");
 		String passw = request.getParameter("passwordInput");
-		List<UserDTO> userDTOs = (List<UserDTO>) request.getSession()
+		List<PersonneDTO> userDTOs = (List<PersonneDTO>) request.getSession()
 				.getAttribute("userDTOs");
-		UserDTO securedUser = null;
-		for (UserDTO userDTO : userDTOs) {
-			if (userDTO.getLogin().compareTo(login) == 0
+		PersonneDTO securedUser = null;
+		for (PersonneDTO userDTO : userDTOs) {
+			if (userDTO.getNom().compareTo(login) == 0
 					&& userDTO.getPassword().compareTo(passw) == 0) {
 				securedUser= userDTO;
 			}
