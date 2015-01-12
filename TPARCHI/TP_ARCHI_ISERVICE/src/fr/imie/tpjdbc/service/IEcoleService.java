@@ -2,10 +2,11 @@ package fr.imie.tpjdbc.service;
 
 import java.util.List;
 
+import fr.imie.tpjdbc.Itransactional;
 import fr.imie.tpjdbc.DTO.PersonneDTO;
 import fr.imie.tpjdbc.DTO.PromotionDTO;
 
-public interface IEcoleService {
+public interface IEcoleService extends Itransactional {
 
 	PersonneDTO insertPersonne(PersonneDTO personneDTO);
 

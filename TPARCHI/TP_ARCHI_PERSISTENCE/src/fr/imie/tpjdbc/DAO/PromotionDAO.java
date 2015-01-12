@@ -17,6 +17,8 @@ public class PromotionDAO extends AJDBC implements IPromotionDAO {
 
 	private static PromotionDAO instance = null;
 	
+	private Connection connection;
+	
 	private PromotionDAO() {
 		// TODO Auto-generated constructor stub
 	}
@@ -30,14 +32,10 @@ public class PromotionDAO extends AJDBC implements IPromotionDAO {
 
 	@Override
 	public List<PromotionDTO> findAll() {
-		Connection connection = null;
 		Statement statement = null;
 		ResultSet resultSet = null;
 		List<PromotionDTO> retour = new ArrayList<PromotionDTO>();
 		try {
-
-			connection = provideConnection();
-
 			statement = connection.createStatement();
 			resultSet = statement
 					.executeQuery("select id, libelle from promotion");
@@ -60,7 +58,6 @@ public class PromotionDAO extends AJDBC implements IPromotionDAO {
 			} catch (SQLException e) {
 				throw new RuntimeException("erreure applicative", e);
 			}
-			closeConnection(connection);
 		}
 
 		return retour;
@@ -75,7 +72,6 @@ public class PromotionDAO extends AJDBC implements IPromotionDAO {
 
 	@Override
 	public PromotionDTO findById(PromotionDTO dto) {
-		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		PromotionDTO retour = null;
@@ -107,7 +103,6 @@ public class PromotionDAO extends AJDBC implements IPromotionDAO {
 			} catch (SQLException e) {
 				throw new RuntimeException("erreure applicative", e);
 			}
-			closeConnection(connection);
 		}
 
 		return retour;
@@ -115,21 +110,11 @@ public class PromotionDAO extends AJDBC implements IPromotionDAO {
 	}
 
 	@Override
-	public void delete(PromotionDTO dto, Connection connectionCaller) {
-		Connection connection = null;
+	public void delete(PromotionDTO dto) {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		PersonneDTO retour = null;
 		try {
-
-			if (connectionCaller != null) {
-				connection = connectionCaller;
-			} else {
-				connection = DriverManager.getConnection(
-						"jdbc:postgresql://localhost:5432/imie", "postgres",
-						"postgres");
-
-			}
 
 			preparedStatement = connection
 					.prepareStatement("delete from promotion where id =?");
@@ -150,17 +135,19 @@ public class PromotionDAO extends AJDBC implements IPromotionDAO {
 			} catch (SQLException e) {
 				throw new RuntimeException("erreur applicative", e);
 			}
-			if (connectionCaller!=null){
-				closeConnection(connection);
-			}
 		}
 
 	}
+	
+	@Override
+	public void setConnection(Connection connection) {
+		this.connection= connection;
+		
+	}
 
 	@Override
-	public void delete(PromotionDTO dto) {
-		delete(dto,null);
-		
+	public Connection getConnection() {
+		return connection;
 	}
 
 }

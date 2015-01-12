@@ -17,6 +17,7 @@ public class EcoleService extends AJDBC implements IEcoleService {
 
 	private IPersonneDAO personneDAO = null;
 	private IPromotionDAO promotionDAO = null;
+	private Connection connection = null;
 	private static EcoleService instance;
 
 	/**
@@ -79,38 +80,27 @@ public class EcoleService extends AJDBC implements IEcoleService {
 	@Override
 	public void deletePromotion(PromotionDTO selectedPromotion) {
 
-		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		PersonneDTO retour = null;
 		try {
-
-			connection = provideConnection();
-
-			connection.setAutoCommit(false);
-
 			// IPersonneDAO personneDAO = new PersonneDAO();
 			PersonneDTO findParameter = new PersonneDTO();
 			findParameter.setPromotionDTO(selectedPromotion);
-			List<PersonneDTO> findedPersonne = personneDAO.findByDTO(
-					findParameter, connection);
+			personneDAO.setConnection(connection);
+			List<PersonneDTO> findedPersonne = personneDAO
+					.findByDTO(findParameter);
 
 			for (PersonneDTO personneDTO : findedPersonne) {
 				personneDTO.setPromotionDTO(null);
-				personneDAO.update(personneDTO, connection);
+				personneDAO.update(personneDTO);
 			}
+			personneDAO.setConnection(null);
 
-			promotionDAO.delete(selectedPromotion, connection);
+			promotionDAO.setConnection(connection);
+			promotionDAO.delete(selectedPromotion);
+			promotionDAO.setConnection(null);
 
-			connection.commit();
-
-		} catch (SQLException e) {
-			try {
-				connection.rollback();
-			} catch (SQLException e1) {
-				throw new RuntimeException("erreur applicative", e1);
-			}
-			throw new RuntimeException("erreur applicative", e);
 		} finally {
 			try {
 				if (resultSet != null && !resultSet.isClosed()) {
@@ -122,7 +112,6 @@ public class EcoleService extends AJDBC implements IEcoleService {
 			} catch (SQLException e) {
 				throw new RuntimeException("erreur applicative", e);
 			}
-			closeConnection(connection);
 		}
 	}
 
@@ -133,6 +122,16 @@ public class EcoleService extends AJDBC implements IEcoleService {
 			compeletePersonneDTO(personneDTO);
 		}
 		return personneDTOs;
+	}
+
+	@Override
+	public void setConnection(Connection connection) {
+		this.connection = connection;
+	}
+
+	@Override
+	public Connection getConnection() {
+		return connection;
 	}
 
 }

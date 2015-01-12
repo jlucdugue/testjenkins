@@ -26,6 +26,8 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 
 	private static PersonneDAO instance = null;
 
+	private Connection connection = null;
+
 	/**
 	 * 
 	 */
@@ -47,13 +49,10 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 	 */
 	@Override
 	public List<PersonneDTO> findAll() {
-		Connection connection = null;
 		Statement statement = null;
 		ResultSet resultSet = null;
 		List<PersonneDTO> retour = new ArrayList<PersonneDTO>();
 		try {
-
-			connection = provideConnection();
 
 			statement = connection.createStatement();
 			resultSet = statement
@@ -77,7 +76,6 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 			} catch (SQLException e) {
 				throw new RuntimeException("erreure applicative", e);
 			}
-			closeConnection(connection);
 		}
 
 		return retour;
@@ -85,14 +83,10 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 
 	@Override
 	public PersonneDTO findById(PersonneDTO dto) {
-		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		PersonneDTO retour = null;
 		try {
-
-			connection = provideConnection();
-
 			preparedStatement = connection
 					.prepareStatement("select nom, prenom, id, datenaiss,tel,promotion_id from personne where id=?");
 			preparedStatement.setInt(1, dto.getId());
@@ -114,7 +108,6 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 			} catch (SQLException e) {
 				throw new RuntimeException("erreure applicative", e);
 			}
-			closeConnection(connection);
 		}
 
 		return retour;
@@ -138,14 +131,10 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 
 	@Override
 	public PersonneDTO insert(PersonneDTO dto) {
-		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		PersonneDTO retour = null;
 		try {
-
-			connection = provideConnection();
-
 			preparedStatement = connection
 					.prepareStatement("insert into personne(nom, prenom, datenaiss,tel) values(?,?,?,?) returning nom, prenom, datenaiss,tel,id,promotion_id");
 			preparedStatement.setString(1, dto.getNom());
@@ -172,7 +161,6 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 			} catch (SQLException e) {
 				throw new RuntimeException("erreure applicative", e);
 			}
-			closeConnection(connection);
 		}
 
 		return retour;
@@ -180,23 +168,13 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 
 	@Override
 	public PersonneDTO update(PersonneDTO dto) {
-		return update(dto, null);
-	}
-
-	@Override
-	public PersonneDTO update(PersonneDTO dto, Connection connectionCaller) {
-		Connection connection = null;
+		if (dto.getNom().equals("test")) {
+			throw new RuntimeException("pour de rire");
+		}
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		PersonneDTO retour = null;
 		try {
-
-			if (connectionCaller != null) {
-				connection = connectionCaller;
-			} else {
-				connection = provideConnection();
-
-			}
 
 			preparedStatement = connection
 					.prepareStatement("update personne set nom=?, prenom=?, datenaiss=?,tel=?, promotion_id=? where id=? returning nom, prenom, datenaiss,tel,id,promotion_id");
@@ -232,23 +210,21 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 			} catch (SQLException e) {
 				throw new RuntimeException("erreure applicative", e);
 			}
-			if (connectionCaller == null) {
-				closeConnection(connection);
-			}
 		}
 
 		return retour;
 	}
 
 	@Override
+	public PersonneDTO update(PersonneDTO dto, Connection connectionCaller) {
+		return null;
+	}
+
+	@Override
 	public void delete(PersonneDTO dto) {
-		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
-		PersonneDTO retour = null;
 		try {
-
-			connection = provideConnection();
 
 			preparedStatement = connection
 					.prepareStatement("delete from personne where id =?");
@@ -270,15 +246,12 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 			} catch (SQLException e) {
 				throw new RuntimeException("erreure applicative", e);
 			}
-
-			closeConnection(connection);
-
 		}
 	}
 
 	@Override
 	public List<PersonneDTO> findByDTO(PersonneDTO findParameter) {
-		return findByDTO(findParameter, null);
+		return findByDTO(findParameter, connection);
 	}
 
 	@Override
@@ -333,6 +306,17 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 
 		return retour;
 
+	}
+
+	@Override
+	public void setConnection(Connection connection) {
+		this.connection = connection;
+
+	}
+
+	@Override
+	public Connection getConnection() {
+		return this.connection;
 	}
 
 }
