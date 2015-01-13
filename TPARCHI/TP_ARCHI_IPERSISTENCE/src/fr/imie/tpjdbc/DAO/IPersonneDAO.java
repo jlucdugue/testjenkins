@@ -14,6 +14,4 @@ public interface IPersonneDAO extends Itransactional {
 	public abstract void delete(PersonneDTO dto);
 	public abstract PersonneDTO update(PersonneDTO dto, Connection connectionCaller);
 	public abstract List<PersonneDTO> findByDTO(PersonneDTO findParameter);
-	public abstract List<PersonneDTO> findByDTO(PersonneDTO findParameter,
-			Connection connectionCaller);
 }

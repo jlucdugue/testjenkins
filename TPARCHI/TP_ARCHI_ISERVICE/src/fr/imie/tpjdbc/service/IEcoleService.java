@@ -22,4 +22,6 @@ public interface IEcoleService extends Itransactional {
 
 	List<PersonneDTO> findAllPersonne();
 
+	Boolean checkAuthentification(PersonneDTO personneDTO);
+
 }

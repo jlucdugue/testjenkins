@@ -285,4 +285,41 @@ public class EcoleServiceProxy extends AJDBC implements IEcoleService {
 		return masterConnection;
 	}
 
+	@Override
+	public Boolean checkAuthentification(PersonneDTO personneDTO) {
+		Boolean retour = null;
+		Connection connection = null;
+		try {
+			if (masterConnection == null) {
+				connection = provideConnection();
+				connection.setAutoCommit(false);
+				real.setConnection(connection);
+			} else {
+				real.setConnection(connection);
+			}
+			retour = real.checkAuthentification(personneDTO);
+			if (masterConnection == null) {
+				connection.commit();
+			}
+		} catch (Exception e) {
+			try {
+				if (masterConnection == null) {
+					connection.rollback();
+				}
+			} catch (SQLException e1) {
+				throw new RuntimeException(e1);
+			}
+			throw new RuntimeException(e);
+		} finally {
+			real.setConnection(null);
+			if (masterConnection == null) {
+				closeConnection(connection);
+			}
+		}
+
+		return retour;
+
+
+	}
+
 }

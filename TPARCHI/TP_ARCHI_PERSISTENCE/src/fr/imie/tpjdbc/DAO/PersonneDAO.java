@@ -137,12 +137,16 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 		PersonneDTO retour = null;
 		try {
 			preparedStatement = connection
-					.prepareStatement("insert into personne(nom, prenom, datenaiss,tel) values(?,?,?,?) returning nom, prenom, datenaiss,tel,id,promotion_id");
+					.prepareStatement("insert into personne(nom, password, prenom, datenaiss,tel) values(?,?,?,?,?) returning nom, password, prenom, datenaiss,tel,id,promotion_id");
 			preparedStatement.setString(1, dto.getNom());
-			preparedStatement.setString(2, dto.getPrenom());
-			Date dateNaiss = new Date(dto.getDateNaiss().getTime());
-			preparedStatement.setDate(3, dateNaiss);
-			preparedStatement.setString(4, dto.getTel());
+			preparedStatement.setString(2, dto.getPassword());
+			preparedStatement.setString(3, dto.getPrenom());
+			Date dateNaiss =null;
+			if(dto.getDateNaiss()!=null){
+				dateNaiss = new Date(dto.getDateNaiss().getTime());
+			}
+			preparedStatement.setDate(4, dateNaiss);
+			preparedStatement.setString(5, dto.getTel());
 
 			resultSet = preparedStatement.executeQuery();
 			if (resultSet.next()) {
@@ -250,33 +254,32 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 		}
 	}
 
-	@Override
-	public List<PersonneDTO> findByDTO(PersonneDTO findParameter) {
-		return findByDTO(findParameter, connection);
-	}
+	
 
 	@Override
-	public List<PersonneDTO> findByDTO(PersonneDTO findParameter,
-			Connection connectionCaller) {
-		Connection connection = null;
+	public List<PersonneDTO> findByDTO(PersonneDTO findParameter) {
 		Statement statement = null;
 		ResultSet resultSet = null;
 		List<PersonneDTO> retour = new ArrayList<PersonneDTO>();
 		try {
 
-			if (connectionCaller == null) {
-				connection = provideConnection();
-			} else {
-				connection = connectionCaller;
-			}
-
 			statement = connection.createStatement();
-			String query = "select id, nom, prenom, datenaiss, tel, promotion_id from personne";
+			String query = "select id, password, nom, prenom, datenaiss, tel, promotion_id from personne";
 
+			Boolean firstConstraint = true;
 			if (findParameter.getPromotionDTO() != null) {
-				query = query.concat(" where promotion_id ="
-						.concat(findParameter.getPromotionDTO().getId()
-								.toString()));
+				query = query.concat(String.format(" %s promotion_id ='%s' ",firstConstraint?"where":"and",findParameter.getId()));
+				firstConstraint=false;
+			}
+			
+			if (findParameter.getNom() != null) {
+				query = query.concat(String.format(" %s nom ='%s' ",firstConstraint?"where":"and",findParameter.getNom()));
+				firstConstraint=false;
+			}
+			
+			if (findParameter.getPassword() != null) {
+				query = query.concat(String.format(" %s password ='%s' ",firstConstraint?"where":"and",findParameter.getPassword()));
+				firstConstraint=false;
 			}
 
 			resultSet = statement.executeQuery(query);
@@ -300,9 +303,6 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 			} catch (SQLException e) {
 				throw new RuntimeException("erreure applicative", e);
 			}
-			if (connectionCaller == null) {
-				closeConnection(connection);
-			}
 		}
 
 		return retour;
@@ -319,5 +319,6 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 	public Connection getConnection() {
 		return this.connection;
 	}
+
 
 }

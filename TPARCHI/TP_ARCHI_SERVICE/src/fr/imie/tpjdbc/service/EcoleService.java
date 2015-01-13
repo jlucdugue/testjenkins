@@ -125,6 +125,19 @@ public class EcoleService extends AJDBC implements IEcoleService {
 	}
 
 	@Override
+	public Boolean checkAuthentification(PersonneDTO personneDTO) {
+		List<PersonneDTO> findedPersonneDTOs = personneDAO.findByDTO(personneDTO);
+		Boolean retour=null;
+		if(findedPersonneDTOs.isEmpty()){
+			retour = false;
+		}else{
+			retour = true;
+		}
+		return retour;
+
+	}
+	
+	@Override
 	public void setConnection(Connection connection) {
 		this.connection = connection;
 	}
@@ -133,5 +146,7 @@ public class EcoleService extends AJDBC implements IEcoleService {
 	public Connection getConnection() {
 		return connection;
 	}
+
+
 
 }

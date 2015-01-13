@@ -9,6 +9,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fr.imie.tpjdbc.AbstractFactory;
+import fr.imie.tpjdbc.ConcreteFactory;
+import fr.imie.tpjdbc.DTO.PersonneDTO;
+import fr.imie.tpjdbc.service.IEcoleService;
+
 /**
  * Servlet implementation class UserForm
  */
@@ -16,6 +21,9 @@ import javax.servlet.http.HttpServletResponse;
 public class UserForm extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	private IEcoleService ecoleService =  new ConcreteFactory().createEcoleService();
+
+	
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -41,16 +49,10 @@ public class UserForm extends HttpServlet {
 		}
 
 		if (id != null) {
-			List<UserDTO> userDTOs = (List<UserDTO>) request.getSession()
-					.getAttribute("userDTOs");
-			UserDTO userSelected = null;
-			for (UserDTO userDTO : userDTOs) {
-				if (userDTO.getId().equals(id)) {
-					userSelected = userDTO;
-					break;
-				}
-			}
-			request.setAttribute("user", userSelected);
+			PersonneDTO personneDTO = new PersonneDTO();
+			personneDTO.setId(id);
+			personneDTO = ecoleService.findPersonneById(personneDTO);
+			request.setAttribute("user", personneDTO);
 		}
 		request.getRequestDispatcher("/WEB-INF/userForm.jsp").forward(request,
 				response);
@@ -59,17 +61,6 @@ public class UserForm extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		//
-		//
-		// String idString = request.getParameter("id");
-		// Integer id = null;
-		// if ("create".compareTo(idString) != 0) {
-		// try {
-		// id = Integer.valueOf(idString);
-		// } catch (NumberFormatException e) {
-		// throw new IllegalArgumentException("requete non valide", e);
-		// }
-		// }
 
 		if (request.getParameter("update") != null) {
 			String idString = request.getParameter("id");
@@ -95,14 +86,10 @@ public class UserForm extends HttpServlet {
 			userSelected.setPassword(request.getParameter("password"));
 
 		} else if (request.getParameter("create") != null) {
-			UserDTO userDTOToInsert = new UserDTO();
-			userDTOToInsert
-					.setId((int) (Math.floor((double) (Math.random() * 1000))));
-			userDTOToInsert.setLogin(request.getParameter("login"));
-			userDTOToInsert.setPassword(request.getParameter("password"));
-			List<UserDTO> userDTOs = (List<UserDTO>) request.getSession()
-					.getAttribute("userDTOs");
-			userDTOs.add(userDTOToInsert);
+			PersonneDTO personneDTOToInsert = new PersonneDTO();
+			personneDTOToInsert.setNom(request.getParameter("login"));
+			personneDTOToInsert.setPassword(request.getParameter("password"));
+			ecoleService.insertPersonne(personneDTOToInsert);
 
 		}
 		response.sendRedirect("UserList");
