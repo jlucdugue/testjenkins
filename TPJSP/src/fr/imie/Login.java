@@ -48,7 +48,7 @@ public class Login extends HttpServlet {
 				.getAttribute("userDTOs");
 		PersonneDTO securedUser = null;
 		for (PersonneDTO userDTO : userDTOs) {
-			if (userDTO.getNom().compareTo(login) == 0
+			if (userDTO.getNom()!=null && userDTO.getPassword()!=null && userDTO.getNom().compareTo(login) == 0
 					&& userDTO.getPassword().compareTo(passw) == 0) {
 				securedUser= userDTO;
 			}
