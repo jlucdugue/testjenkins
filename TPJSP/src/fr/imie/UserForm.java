@@ -71,19 +71,19 @@ public class UserForm extends HttpServlet {
 			} catch (NumberFormatException e) {
 				throw new IllegalArgumentException("id non valide", e);
 			}
-
-			List<UserDTO> userDTOs = (List<UserDTO>) request.getSession()
-					.getAttribute("userDTOs");
-			UserDTO userSelected = null;
-			for (UserDTO userDTO : userDTOs) {
-				if (userDTO.getId().equals(id)) {
-					userSelected = userDTO;
-					break;
-				}
+			
+			PersonneDTO userSelected= null;
+			if (id != null) {
+				userSelected = new PersonneDTO();
+				userSelected.setId(id);
+				userSelected = ecoleService.findPersonneById(userSelected);
+				userSelected.setNom(request.getParameter("login"));
+				userSelected.setPassword(request.getParameter("password"));
+				ecoleService.updatePersonne(userSelected);
+				request.setAttribute("user", userSelected);
 			}
 
-			userSelected.setLogin(request.getParameter("login"));
-			userSelected.setPassword(request.getParameter("password"));
+
 
 		} else if (request.getParameter("create") != null) {
 			PersonneDTO personneDTOToInsert = new PersonneDTO();

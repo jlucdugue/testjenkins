@@ -12,7 +12,7 @@
 			<div class="uk-form-row">
 				<label for="loginInput" class="uk-form-label">login</label>
 				<div class="uk-form-controls">
-					<input type="text" id="loginInput" value="${user.login}"
+					<input type="text" id="loginInput" value="${user.nom}"
 						name="login" />
 				</div>
 			</div>

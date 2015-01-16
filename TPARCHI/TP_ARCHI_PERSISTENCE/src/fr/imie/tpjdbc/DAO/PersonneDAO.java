@@ -88,7 +88,7 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 		PersonneDTO retour = null;
 		try {
 			preparedStatement = connection
-					.prepareStatement("select nom, prenom, id, datenaiss,tel,promotion_id from personne where id=?");
+					.prepareStatement("select nom, prenom, id, datenaiss,tel,promotion_id,password from personne where id=?");
 			preparedStatement.setInt(1, dto.getId());
 			resultSet = preparedStatement.executeQuery();
 			if (resultSet.next()) {
@@ -141,8 +141,8 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 			preparedStatement.setString(1, dto.getNom());
 			preparedStatement.setString(2, dto.getPassword());
 			preparedStatement.setString(3, dto.getPrenom());
-			Date dateNaiss =null;
-			if(dto.getDateNaiss()!=null){
+			Date dateNaiss = null;
+			if (dto.getDateNaiss() != null) {
 				dateNaiss = new Date(dto.getDateNaiss().getTime());
 			}
 			preparedStatement.setDate(4, dateNaiss);
@@ -182,10 +182,13 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 		try {
 
 			preparedStatement = connection
-					.prepareStatement("update personne set nom=?, prenom=?, datenaiss=?,tel=?, promotion_id=? where id=? returning nom, prenom, datenaiss,tel,id,promotion_id");
+					.prepareStatement("update personne set nom=?, prenom=?, datenaiss=?,tel=?, promotion_id=?, password=? where id=? returning nom, prenom, datenaiss,tel,id,promotion_id,password");
 			preparedStatement.setString(1, dto.getNom());
 			preparedStatement.setString(2, dto.getPrenom());
-			Date dateNaiss = new Date(dto.getDateNaiss().getTime());
+			Date dateNaiss  = null;
+			if (dto.getDateNaiss() != null) {
+				dateNaiss = new Date(dto.getDateNaiss().getTime());
+			}
 			preparedStatement.setDate(3, dateNaiss);
 			preparedStatement.setString(4, dto.getTel());
 			if (dto.getPromotionDTO() != null) {
@@ -194,7 +197,8 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 				preparedStatement.setNull(5, Types.INTEGER);
 			}
 
-			preparedStatement.setInt(6, dto.getId());
+			preparedStatement.setString(6, dto.getPassword());
+			preparedStatement.setInt(7, dto.getId());
 
 			resultSet = preparedStatement.executeQuery();
 			if (resultSet.next()) {
@@ -254,8 +258,6 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 		}
 	}
 
-	
-
 	@Override
 	public List<PersonneDTO> findByDTO(PersonneDTO findParameter) {
 		Statement statement = null;
@@ -268,18 +270,24 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 
 			Boolean firstConstraint = true;
 			if (findParameter.getPromotionDTO() != null) {
-				query = query.concat(String.format(" %s promotion_id ='%s' ",firstConstraint?"where":"and",findParameter.getId()));
-				firstConstraint=false;
+				query = query.concat(String.format(" %s promotion_id ='%s' ",
+						firstConstraint ? "where" : "and",
+						findParameter.getId()));
+				firstConstraint = false;
 			}
-			
+
 			if (findParameter.getNom() != null) {
-				query = query.concat(String.format(" %s nom ='%s' ",firstConstraint?"where":"and",findParameter.getNom()));
-				firstConstraint=false;
+				query = query.concat(String.format(" %s nom ='%s' ",
+						firstConstraint ? "where" : "and",
+						findParameter.getNom()));
+				firstConstraint = false;
 			}
-			
+
 			if (findParameter.getPassword() != null) {
-				query = query.concat(String.format(" %s password ='%s' ",firstConstraint?"where":"and",findParameter.getPassword()));
-				firstConstraint=false;
+				query = query.concat(String.format(" %s password ='%s' ",
+						firstConstraint ? "where" : "and",
+						findParameter.getPassword()));
+				firstConstraint = false;
 			}
 
 			resultSet = statement.executeQuery(query);
@@ -319,6 +327,5 @@ public class PersonneDAO extends AJDBC implements IPersonneDAO {
 	public Connection getConnection() {
 		return this.connection;
 	}
-
 
 }
