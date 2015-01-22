@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import fr.imie.model.Personne;
-import fr.imie.service.PersonneServiceLocal;
+import fr.imie.service.SchoolServiceLocal;
 
 /**
  * Servlet implementation class AllPersonne
@@ -21,7 +21,7 @@ public class PersonList extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@EJB
-	PersonneServiceLocal personneService;
+	SchoolServiceLocal personneService;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -37,7 +37,7 @@ public class PersonList extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		List<Personne> findAll = personneService.findAll();
+		List<Personne> findAll = personneService.findPersonAll();
 		request.setAttribute("persons", findAll);
 		request.getRequestDispatcher("/WEB-INF/personList.jsp").forward(request, response);
 	}

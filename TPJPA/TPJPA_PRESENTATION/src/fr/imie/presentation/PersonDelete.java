@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import fr.imie.model.Personne;
-import fr.imie.service.PersonneServiceLocal;
+import fr.imie.service.SchoolServiceLocal;
 
 /**
  * Servlet implementation class PersonDelete
@@ -20,7 +20,7 @@ public class PersonDelete extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	@EJB
-	PersonneServiceLocal personneService;
+	SchoolServiceLocal personneService;
 	
     /**
      * @see HttpServlet#HttpServlet()
@@ -38,7 +38,7 @@ public class PersonDelete extends HttpServlet {
 		Integer id = Integer.valueOf(idString);
 		Personne personne = new Personne();
 		personne.setId(id);
-		personneService.delete(personne);
+		personneService.deletePerson(personne);
 		response.sendRedirect("PersonList");
 		
 	}

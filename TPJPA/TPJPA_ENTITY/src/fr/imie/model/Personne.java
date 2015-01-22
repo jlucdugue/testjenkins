@@ -33,11 +33,13 @@ public class Personne implements Serializable {
 	@Column(name="prenom")
 	private String prenom;
 
-	@Column(name="promotion_id")
-	private Integer promotionId;
-
 	@Column(name="tel")
 	private String tel;
+
+	//uni-directional many-to-one association to Promotion
+	@ManyToOne
+	@JoinColumn(name="promotion_id")
+	private Promotion promotion;
 
 	public Personne() {
 	}
@@ -82,20 +84,20 @@ public class Personne implements Serializable {
 		this.prenom = prenom;
 	}
 
-	public Integer getPromotionId() {
-		return this.promotionId;
-	}
-
-	public void setPromotionId(Integer promotionId) {
-		this.promotionId = promotionId;
-	}
-
 	public String getTel() {
 		return this.tel;
 	}
 
 	public void setTel(String tel) {
 		this.tel = tel;
+	}
+
+	public Promotion getPromotion() {
+		return this.promotion;
+	}
+
+	public void setPromotion(Promotion promotion) {
+		this.promotion = promotion;
 	}
 
 }

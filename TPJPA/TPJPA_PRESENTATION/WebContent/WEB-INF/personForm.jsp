@@ -24,30 +24,46 @@
 
 		<div style="flex-basis: 150px;"></div>
 		<div style="flex: 1;">
-			<form method="post">
-				<input type="hidden" value="${personne.id}">
-				<div>
-					<label for="nomInput"> nom </label> <input id="nomInput"
-						type="text" name="lastName" value="${personne.nom}">
-				</div>
-				<div>
-					<label for="prenomInput"> prenom </label> <input id="prenomInput"
-						type="text" name="firstName" value="${personne.prenom}">
-				</div>
-				<c:choose>
-					<c:when test="${! empty personne}">
-						<button type="submit">
-							<i class="write square icon"></i>
-						</button>
-					</c:when>
-					<c:otherwise>
-						<button type="submit">
-							<i class="add square icon"></i>
-						</button>
-					</c:otherwise>
-				</c:choose>
-
-			</form>
+			<div classe="ui main container">
+				<form class="ui form" method="post">
+					<input type="hidden" value="${personne.id}">
+					<div class="field">
+						<label for="nomInput"> nom </label> <input id="nomInput"
+							type="text" name="lastName" value="${personne.nom}">
+					</div>
+					<div class="field">
+						<label for="prenomInput"> prenom </label> <input id="prenomInput"
+							type="text" name="firstName" value="${personne.prenom}">
+					</div>
+					<div class="field">
+						<label for="classInput"> promotion </label> <select
+							id="classInput" name="class">
+							<option value=""></option>
+							<c:forEach items="${classes}" var="class">
+								<c:set var="selected" value="">
+								</c:set>
+								<c:if test="${class.id==personne.promotion.id}">
+									<c:set var="selected" value="selected">
+									</c:set>
+								</c:if>
+								<option value="${class.id}" ${selected}>${class.libelle}</option>
+							</c:forEach>
+						</select>
+					</div>
+					<c:choose>
+						<c:when test="${! empty personne}">
+							<button class="ui button icon" type="submit">
+								<i class="big write icon"></i>
+							</button>
+						</c:when>
+						<c:otherwise>
+							<button class="ui button icon" type="submit">
+								<i class="big plus icon"></i>
+							</button>
+						</c:otherwise>
+					</c:choose>
+				</form>
+			</div>
 		</div>
 		<div style="flex-basis: 150px;"></div>
 	</div>

@@ -31,12 +31,14 @@
 					<tr>
 						<th>nom</th>
 						<th>prenom</th>
+						<th>promotion</th>
 						<th>action</th>
 					</tr>
 					<c:forEach items="${persons}" var="person">
 						<tr>
 							<td><c:out value="${person.nom}" /></td>
 							<td><c:out value="${person.prenom}" /></td>
+							<td><c:out value="${person.promotion.libelle}" /></td>
 							<td class="right aligned collapsing"><a
 								href="PersonForm?id=${person.id}"><i class="write icon"></i></a>
 								<a href="PersonDelete?id=${person.id}"><i
