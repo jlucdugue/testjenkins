@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import fr.imie.model.Personne;
 import fr.imie.model.Promotion;
+import fr.imie.model.Stagiaire;
 import fr.imie.service.SchoolServiceLocal;
 
 /**
@@ -70,7 +71,7 @@ public class PersonForm extends HttpServlet {
 		}
 		
 		
-		Personne personne = new Personne();
+		Stagiaire personne = new Stagiaire();
 		if (id != null) {
 			personne.setId(id);
 		}

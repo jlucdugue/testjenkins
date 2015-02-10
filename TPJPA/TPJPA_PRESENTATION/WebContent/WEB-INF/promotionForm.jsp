@@ -26,35 +26,24 @@
 		<div style="flex: 1;">
 			<div classe="ui main container">
 				<form class="ui form" method="post">
-					<input type="hidden" value="${personne.id}">
+					<input type="hidden" value="${promotion.id}">
 					<div class="field">
 						<label for="nomInput"> nom </label> <input id="nomInput"
-							type="text" name="lastName" value="${personne.nom}">
+							type="text" name="lastName" value="${promotion.libelle}">
 					</div>
 					<div class="field">
-						<label for="prenomInput"> prenom </label> <input id="prenomInput"
-							type="text" name="firstName" value="${personne.prenom}">
-					</div>
-					<div class="field">
-						<label for="classInput"> promotion </label>
-						<select
-							id="classInput" name="class">
-							<option value=""></option>
-							<c:forEach items="${classes}" var="class">
-								<c:set var="selected" value="">
-								</c:set>
-								<c:if test="${class.id==personne.promotion.id}">
-									<c:set var="selected" value="selected">
-									</c:set>
-								</c:if>
-								<option value="${class.id}" ${selected}>${class.libelle}</option>
+						<table>
+
+							<c:forEach items="${promotion.personnes}" var="personne">
+								<tr>
+									<td><c:out value="${personne.nom }"></c:out></td>
+									<td><c:out value="${personne.prenom }"></c:out></td>
+								</tr>
 							</c:forEach>
-						</select>
-						<c:if test="${! empty personne.promotion}">
-						<a href="PromotionForm?id=${personne.promotion.id}"> détail promotion</a>
-						</c:if>
-						
+
+						</table>
 					</div>
+
 					<c:choose>
 						<c:when test="${! empty personne}">
 							<button class="ui button icon" type="submit">

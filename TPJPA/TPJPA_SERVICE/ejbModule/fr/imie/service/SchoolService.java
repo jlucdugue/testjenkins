@@ -61,6 +61,11 @@ public class SchoolService implements SchoolServiceLocal {
 				.getResultList();
 	}
 
+	@Override
+	public Promotion findPromotionById(Promotion promotion) {
+		return entityManager.find(Promotion.class, promotion.getId());
+	}
+
 }
 
 

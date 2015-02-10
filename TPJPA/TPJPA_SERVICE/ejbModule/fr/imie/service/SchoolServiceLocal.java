@@ -22,4 +22,6 @@ public interface SchoolServiceLocal {
 
 	public List<Promotion> findAllClass();
 
+	public Promotion findPromotionById(Promotion promotion);
+
 }

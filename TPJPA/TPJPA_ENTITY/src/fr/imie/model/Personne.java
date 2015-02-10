@@ -11,12 +11,13 @@ import java.util.Date;
  */
 @Entity
 @Table(name="personne")
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 @NamedQuery(name="Personne.findAll", query="SELECT p FROM Personne p")
 public class Personne implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.TABLE)
 	@Column(name="id")
 	private int id;
 
@@ -35,11 +36,6 @@ public class Personne implements Serializable {
 
 	@Column(name="tel")
 	private String tel;
-
-	//uni-directional many-to-one association to Promotion
-	@ManyToOne
-	@JoinColumn(name="promotion_id")
-	private Promotion promotion;
 
 	public Personne() {
 	}
@@ -90,14 +86,6 @@ public class Personne implements Serializable {
 
 	public void setTel(String tel) {
 		this.tel = tel;
-	}
-
-	public Promotion getPromotion() {
-		return this.promotion;
-	}
-
-	public void setPromotion(Promotion promotion) {
-		this.promotion = promotion;
 	}
 
 }

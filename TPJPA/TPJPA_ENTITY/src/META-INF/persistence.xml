@@ -4,6 +4,8 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
 	<persistence-unit name="TPJPA" transaction-type="JTA">
 		<jta-data-source>java:/datasource/imie</jta-data-source>
+		<class>fr.imie.model.Formateur</class>
+		<class>fr.imie.model.Stagiaire</class>
 		<exclude-unlisted-classes>false</exclude-unlisted-classes>
 	</persistence-unit>
 </persistence>
