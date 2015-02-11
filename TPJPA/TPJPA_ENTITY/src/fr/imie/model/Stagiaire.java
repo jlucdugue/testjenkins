@@ -10,6 +10,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "stagiaire")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @NamedQuery(name = "Stagiaire.findAll", query = "SELECT s FROM Stagiaire s")
 public class Stagiaire extends Personne implements Serializable {
 	private static final long serialVersionUID = 1L;
