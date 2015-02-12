@@ -7,16 +7,36 @@
 <script src="js/main.js"></script>
 </head>
 <body>
-	<table id="personneTable">
-		<thead>
-			<tr>
-				<th>nom</th>
-				<th>prenom</th>
-			</tr>
-		</thead>
-		<tbody>
+	<div id="list">
+		<div>
+			<table id="personneTable">
+				<thead>
+					<tr>
+						<th>nom</th>
+						<th>prenom</th>
+					</tr>
+				</thead>
+				<tbody>
 
-		</tbody>
-	</table>
+				</tbody>
+			</table>
+		</div>
+		<div>
+		<button id="creerNavigation">créer</button>
+		</div>
+	</div>
+	<div id="form">
+		<div>
+			<label for="nomInput">nom</label><input type="text" id="nomInput">
+		</div>
+		<div>
+			<label for="prenomInput">prenom</label><input type="text"
+				id="prenomInput">
+		</div>
+		<div>
+			<button id="creer">créer</button>
+			<button id="modifier">modifier</button>
+		</div>
+	</div>
 </body>
 </html>
