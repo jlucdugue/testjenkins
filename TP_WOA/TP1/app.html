@@ -24,11 +24,20 @@
             }
         };
 
-        var Vue = function(model) {
+        var Vue = function (model) {
             Observer.call(this);
             this.model = model;
+            this.formatNumber = function (val) {
+                retour = val.toString();
+                if (val < 10) {
+                    retour = '0' + retour;
+                }
+                return retour;
+            }
             this.update = function () {
-                window.document.getElementById('compteur').value=model.time;          
+                window.document.getElementById('seconde').innerHTML = this.formatNumber(model.seconde);
+                window.document.getElementById('minute').innerHTML = this.formatNumber(model.minute);
+                window.document.getElementById('heure').innerHTML = this.formatNumber(model.heure);
             }
         }
 
@@ -37,28 +46,43 @@
         var Model = function () {
             Subject.call(this);
             this.data = {};
-            this.time=0;
-            function iteration(){
-                //console.log(this);
-                this.time = this.time+1;
+            this.seconde = 0;
+            this.minute = 0;
+            this.heure = 0;
+
+            function iteration() {
+                this.seconde = this.seconde + 1;
+                this.businessRule();
                 this.notify();
             };
-            //standard context of callbak function used by setInterval is Window
-            setInterval(iteration.bind(this),1000);
+
+            this.businessRule = function () {
+                    if (this.seconde >= 60) {
+                        this.minute++;
+                        this.seconde -= 60;
+                    }
+
+                    if (this.minute >= 60) {
+                        this.heure++;
+                        this.minute -= 60;
+                    }
+
+                }
+                //standard context of callbak function used by setInterval is Window
+            setInterval(iteration.bind(this), 1000);
         };
-        
+
         Model.prototype = Object.create(Subject.prototype);
-        
+
         var model = new Model();
         var Vue = new Vue(model);
         model.attach(Vue);
-        
     </script>
 </head>
 
-<body>
+<body style="font-size:20em">
 
-<input type="text" id="compteur"/>
+    <span id="heure"></span><span>:</span><span id="minute"></span><span>:</span><span id="seconde"></span>
 
 </body>
 
