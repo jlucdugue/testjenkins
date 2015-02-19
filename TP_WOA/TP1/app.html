@@ -16,7 +16,7 @@
     <script>
         var Observer = function () {
             this.update = function (message) {
-                console.log('update');
+                throw 'NotSupportedException';
             }
         };
 
@@ -58,7 +58,7 @@
                 }
                 return retour;
             }
-            this.update = function () {
+            this.update = function (message) {
                 window.document.getElementById('seconde').innerHTML = this.formatNumber(model.seconde);
                 window.document.getElementById('minute').innerHTML = this.formatNumber(model.minute);
                 window.document.getElementById('heure').innerHTML = this.formatNumber(model.heure);
