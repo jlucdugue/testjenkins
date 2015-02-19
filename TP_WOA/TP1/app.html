@@ -24,43 +24,41 @@
             }
         };
 
-        var ConcreteObserver = function(id,concreteSubject) {
+        var Vue = function(model) {
             Observer.call(this);
-            this.concreteSubject = concreteSubject;
-            this.id=id;
+            this.model = model;
             this.update = function () {
-                console.log('update concret observer, subject : ',id, this.concreteSubject);
+                window.document.getElementById('compteur').value=model.time;          
             }
         }
 
-        ConcreteObserver.prototype = Object.create(Observer.prototype);
+        Vue.prototype = Object.create(Observer.prototype);
 
-        var ConcreteSubject = function () {
+        var Model = function () {
             Subject.call(this);
             this.data = {};
-            this.misAJour = function (data) {
-                this.data=data;
-                console.log('maj concret subject : ', this.data);
+            this.time=0;
+            function iteration(){
+                //console.log(this);
+                this.time = this.time+1;
                 this.notify();
-            }
+            };
+            //standard context of callbak function used by setInterval is Window
+            setInterval(iteration.bind(this),1000);
         };
         
-        ConcreteSubject.prototype = Object.create(Subject.prototype);
-
+        Model.prototype = Object.create(Subject.prototype);
         
-        var subject = new ConcreteSubject();
-        var observer1 = new ConcreteObserver(1,subject);
-        var observer2 = new ConcreteObserver(2,subject);
-        console.log(subject);
-        subject.attach(observer1);
-        subject.attach(observer2);
-        subject.misAJour({text:'coucou'}) ;
+        var model = new Model();
+        var Vue = new Vue(model);
+        model.attach(Vue);
+        
     </script>
 </head>
 
 <body>
 
-
+<input type="text" id="compteur"/>
 
 </body>
 
