@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+    <script>
+        var Observer = function () {
+            this.update = function () {
+                console.log('update');
+            }
+        };
+
+        var Subject = function () {
+            var observers = [];
+            this.notify = function () {
+                for (observerKey in observers) {
+                    var observer = observers[observerKey];
+                    observer.update();
+                }
+            }
+            this.attach = function (observer) {
+                observers.unshift(observer);
+            }
+        };
+
+        var ConcreteObserver = function(id,concreteSubject) {
+            Observer.call(this);
+            this.concreteSubject = concreteSubject;
+            this.id=id;
+            this.update = function () {
+                console.log('update concret observer, subject : ',id, this.concreteSubject);
+            }
+        }
+
+        ConcreteObserver.prototype = Object.create(Observer.prototype);
+
+        var ConcreteSubject = function () {
+            Subject.call(this);
+            this.data = {};
+            this.misAJour = function (data) {
+                this.data=data;
+                console.log('maj concret subject : ', this.data);
+                this.notify();
+            }
+        };
+        
+        ConcreteSubject.prototype = Object.create(Subject.prototype);
+
+        
+        var subject = new ConcreteSubject();
+        var observer1 = new ConcreteObserver(1,subject);
+        var observer2 = new ConcreteObserver(2,subject);
+        console.log(subject);
+        subject.attach(observer1);
+        subject.attach(observer2);
+        subject.misAJour({text:'coucou'}) ;
+    </script>
+</head>
+
+<body>
+
+
+
+</body>
+
+</html>
