@@ -4,19 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <title>Untitled Document</title>
+
+</head>
+
+<body style="font-size:10em">
+
+    <span id="heure"></span><span>:</span><span id="minute"></span><span>:</span><span id="seconde"></span>
+    <button id="plusHour">+1H</button>
+    <button id="subHour">-1H</button>
+
     <script>
         var Observer = function () {
-            this.update = function () {
+            this.update = function (message) {
                 console.log('update');
             }
         };
 
         var Subject = function () {
             var observers = [];
-            this.notify = function () {
+            this.notify = function (message) {
                 for (observerKey in observers) {
                     var observer = observers[observerKey];
-                    observer.update();
+                    observer.update(message);
                 }
             }
             this.attach = function (observer) {
@@ -26,7 +35,22 @@
 
         var Vue = function (model) {
             Observer.call(this);
+            Subject.call(this);
             this.model = model;
+            this.plusHour = function () {
+                this.notify('plusHour');
+            };
+
+            this.subHour = function () {
+                this.notify('subHour');
+            };
+
+            window.document.getElementById('plusHour').addEventListener('click', this.plusHour.bind(this));
+            window.document.getElementById('subHour').addEventListener('click', this.subHour.bind(this));
+
+
+
+
             this.formatNumber = function (val) {
                 retour = val.toString();
                 if (val < 10) {
@@ -42,6 +66,7 @@
         }
 
         Vue.prototype = Object.create(Observer.prototype);
+        Vue.prototype = Object.create(Subject.prototype);
 
         var Model = function () {
             Subject.call(this);
@@ -56,6 +81,18 @@
                 this.notify();
             };
 
+            this.addHour = function () {
+                this.heure++;
+                this.businessRule();
+                this.notify('plusHour');
+            };
+
+            this.subHour = function () {
+                this.heure--;
+                this.businessRule();
+                this.notify('subHour');
+            };
+
             this.businessRule = function () {
                     if (this.seconde >= 60) {
                         this.minute++;
@@ -67,22 +104,41 @@
                         this.minute -= 60;
                     }
 
+                    if (this.heure >= 24) {
+                        this.heure -= 24;
+                    }
+
                 }
                 //standard context of callbak function used by setInterval is Window
             setInterval(iteration.bind(this), 1000);
         };
 
+        var Controler = function () {
+            Observer.call(this);
+            this.update = function (message) {
+                console.log(message);
+                switch (message) {
+                case 'plusHour':
+                    model.addHour();
+                    break;
+                case 'subHour':
+                    model.subHour();
+                    break;
+                }
+            }
+
+        };
+
+        Controler.prototype = Object.create(Observer.prototype);
+
         Model.prototype = Object.create(Subject.prototype);
 
         var model = new Model();
-        var Vue = new Vue(model);
-        model.attach(Vue);
+        var vue = new Vue(model);
+        var controler = new Controler(model);
+        model.attach(vue);
+        vue.attach(controler);
     </script>
-</head>
-
-<body style="font-size:20em">
-
-    <span id="heure"></span><span>:</span><span id="minute"></span><span>:</span><span id="seconde"></span>
 
 </body>
 
