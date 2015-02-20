@@ -7,11 +7,10 @@
 
 </head>
 
-<body style="font-size:10em">
+<body>
 
-    <span id="heure"></span><span>:</span><span id="minute"></span><span>:</span><span id="seconde"></span>
-    <button id="plusHour">+1H</button>
-    <button id="subHour">-1H</button>
+    <div>horloge IMIE</div>
+    <div id="dynamic"></div>
 
     <script>
         var Observer = function () {
@@ -31,25 +30,39 @@
             this.attach = function (observer) {
                 observers.unshift(observer);
             }
+            
+             this.dettach = function (observer) {
+                observers.splice(observers.indexOf(observer),1);
+            }
         };
 
-        var Vue = function (model) {
+        var View = function (model) {
             Observer.call(this);
             Subject.call(this);
             this.model = model;
+            var activ = false;
             this.plusHour = function () {
-                this.notify('plusHour');
+                this.notify('addHourMessage');
             };
 
             this.subHour = function () {
-                this.notify('subHour');
+                this.notify('subHourMessage');
             };
 
-            window.document.getElementById('plusHour').addEventListener('click', this.plusHour.bind(this));
-            window.document.getElementById('subHour').addEventListener('click', this.subHour.bind(this));
+            this.changeView = function () {
+                this.notify('changeViewTo2Message');
+            };
 
+            this.display = function () {
+                activ = true;
+                var dynamicDiv = window.document.getElementById('dynamic');
+                dynamicDiv.innerHTML = '<div style="font-size:6em"><span id="heure"></span><span>:</span><span id="minute"></span><span>:</span><span id="seconde"></span><button id="addHour">+1H</button><button id="subHour">-1H</button><button id="changeView">changer vue</button></div>'
+                window.document.getElementById('addHour').addEventListener('click', this.plusHour.bind(this));
+                window.document.getElementById('subHour').addEventListener('click', this.subHour.bind(this));
+                window.document.getElementById('changeView').addEventListener('click', this.changeView.bind(this));
+                this.update();
 
-
+            }
 
             this.formatNumber = function (val) {
                 retour = val.toString();
@@ -65,8 +78,50 @@
             }
         }
 
-        Vue.prototype = Object.create(Observer.prototype);
-        Vue.prototype = Object.create(Subject.prototype);
+        View.prototype = Object.create(Observer.prototype);
+        View.prototype = Object.create(Subject.prototype);
+
+
+        var Vue2 = function (model) {
+            Observer.call(this);
+            Subject.call(this);
+            this.model = model;
+            this.plusHour = function () {
+                this.notify('addHourMessage');
+            };
+
+            this.subHour = function () {
+                this.notify('subHourMessage');
+            };
+            this.changeView = function () {
+                this.notify('changeViewTo1Message');
+            };
+
+            this.display = function () {
+                var dynamicDiv = window.document.getElementById('dynamic');
+                dynamicDiv.innerHTML = '<div style="font-size:10em"><span id="heure"></span><span>:</span><span id="minute"></span><button id="changeView">changer vue</button></div>'
+                window.document.getElementById('changeView').addEventListener('click', this.changeView.bind(this));
+                this.update();
+
+            }
+
+            this.formatNumber = function (val) {
+                retour = val.toString();
+                if (val < 10) {
+                    retour = '0' + retour;
+                }
+                return retour;
+            }
+            this.update = function (message) {
+                console.log(model);
+                window.document.getElementById('minute').innerHTML = this.formatNumber(model.minute);
+                window.document.getElementById('heure').innerHTML = this.formatNumber(model.heure);
+            }
+        }
+
+        View.prototype = Object.create(Observer.prototype);
+        View.prototype = Object.create(Subject.prototype);
+
 
         var Model = function () {
             Subject.call(this);
@@ -84,13 +139,13 @@
             this.addHour = function () {
                 this.heure++;
                 this.businessRule();
-                this.notify('plusHour');
+                this.notify('addHourMessage');
             };
 
             this.subHour = function () {
                 this.heure--;
                 this.businessRule();
-                this.notify('subHour');
+                this.notify('subHourMessage');
             };
 
             this.businessRule = function () {
@@ -113,20 +168,41 @@
             setInterval(iteration.bind(this), 1000);
         };
 
-        var Controler = function () {
+        var Controler = function (model, view, vue2) {
             Observer.call(this);
+            var model = model;
+            var view = view;
+            var vue2 = vue2;
+            view.attach(this);
+            vue2.attach(this);
+            var currentView = view;
+            model.attach(currentView);
             this.update = function (message) {
                 console.log(message);
                 switch (message) {
-                case 'plusHour':
+                case 'addHourMessage':
                     model.addHour();
                     break;
-                case 'subHour':
+                case 'subHourMessage':
                     model.subHour();
+                    break;
+                case 'changeViewTo2Message':
+                    model.dettach(currentView);
+                    currentView = vue2;
+                    model.attach(currentView);
+                    currentView.display();
+                    break;
+                case 'changeViewTo1Message':
+                    model.dettach(currentView);
+                    currentView = view;
+                    model.attach(currentView);
+                    currentView.display();
                     break;
                 }
             }
 
+
+            currentView.display();
         };
 
         Controler.prototype = Object.create(Observer.prototype);
@@ -134,10 +210,10 @@
         Model.prototype = Object.create(Subject.prototype);
 
         var model = new Model();
-        var vue = new Vue(model);
-        var controler = new Controler(model);
-        model.attach(vue);
-        vue.attach(controler);
+        var vue = new View(model);
+        var vue2 = new Vue2(model);
+        var controler = new Controler(model, vue, vue2);
+
     </script>
 
 </body>
