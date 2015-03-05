@@ -1,0 +1,24 @@
+configurations {
+    api
+}
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api(
+    'org.dbunit:dbunit:2.5.0','org.slf4j:slf4j-log4j12:1.7.10'
+    )
+}
+
+task extractApi(type: Copy) {
+    /*from 'src/dist'
+    from({ zipTree(configurations.api.singleFile) }) {
+        include 'default.dbunit.properties'
+        rename 'default.dbunit.properties', 'dbunit.properties'
+    }*/
+        from { // use of closure defers evaluation until execution time
+        configurations.api.collect { zipTree(it) }
+    } 
+    into "$buildDir/api/"
+}
