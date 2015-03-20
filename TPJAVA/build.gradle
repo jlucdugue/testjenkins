@@ -1,0 +1,22 @@
+version = '1.0.0-SNAPSHOT'
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+group='imie'
+
+repositories {
+    mavenCentral()
+}
+
+
+test{
+    outputs.upToDateWhen { false }
+}	
+
+dependencies {
+//  testCompile group: 'junit', name: 'junit', version: '4.11'
+//  testCompile 'org.mockito:mockito-core:1.9.5'
+  compile group: 'javax', name: 'javaee-api', version: '7.0'
+}
+
